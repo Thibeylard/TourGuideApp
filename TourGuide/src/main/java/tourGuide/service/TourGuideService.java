@@ -40,7 +40,7 @@ public class TourGuideService {
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
-		tracker = new Tracker(this);
+		this.tracker = new Tracker(this, gpsUtil, rewardsService);
 		addShutDownHook();
 	}
 	
@@ -49,9 +49,16 @@ public class TourGuideService {
 	}
 	
 	public VisitedLocation getUserLocation(User user) {
-		return (user.getVisitedLocations().size() > 0) ?
-				user.getLastVisitedLocation() :
-				trackUserLocation(user);
+		VisitedLocation visitedLocation;
+
+		if (user.getVisitedLocations().size() > 0) {
+			visitedLocation = user.getLastVisitedLocation();
+		} else {
+			// Very rare case of location initiation, which is why gpsUtil can be invoke directly
+			visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+			user.addToVisitedLocations(visitedLocation);
+		}
+		return visitedLocation;
 	}
 	
 	public User getUser(String userName) {
@@ -67,38 +74,34 @@ public class TourGuideService {
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}
-	
+
 	public List<Provider> getTripDeals(User user) {
-		int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(UserReward::getRewardPoints).sum();
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(UserReward::getRewardPoints).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
-				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
 		user.setTripDeals(providers);
 		return providers;
 	}
-	
-	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		user.addToVisitedLocations(visitedLocation);
-		rewardsService.calculateRewards(user);
-		return visitedLocation;
-	}
+
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
+		for (Attraction attraction : gpsUtil.getAttractions()) {
+			if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
 				nearbyAttractions.add(attraction);
 			}
 		}
 		
 		return nearbyAttractions;
 	}
-	
+
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
 		      public void run() {
-		        tracker.stopTracking();
-		      } 
+				  if (!testMode) {
+					  tracker.stopTracking();
+				  }
+			  }
 		    }); 
 	}
 	
