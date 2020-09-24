@@ -55,12 +55,17 @@ public class TestPerformance {
     @Test
     public void highVolumeTrackLocation() throws InterruptedException {
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
-        InternalTestHelper.setInternalUserNumber(10000);
+        InternalTestHelper.setInternalUserNumber(1000);
         StopWatch stopWatch = new StopWatch();
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
         List<User> allUsers = tourGuideService.getAllUsers();
-        List<Integer> numberVisitedLocations = allUsers.stream()
+
+        /*
+            TrackLocation is supposed to add a new VisitedLocation for each user.
+            So VisitedLocation count is saved for each user, and will be compared to new count after tracking.
+        */
+        List<Integer> initialVisitedLocationsCount = allUsers.stream()
                 .map(u -> u.getVisitedLocations().size())
                 .collect(Collectors.toList());
 
@@ -68,12 +73,13 @@ public class TestPerformance {
         tourGuideService.tracker.measureTrackingPerformance(tourGuideService.getAllUsers());
         stopWatch.stop();
 
-        List<Integer> newNumberVisitedLocations = allUsers.stream()
+        List<Integer> newVisitedLocationsCount = allUsers.stream()
                 .map(u -> u.getVisitedLocations().size())
                 .collect(Collectors.toList());
 
-        for (int i = 0; i < numberVisitedLocations.size(); i++) {
-            assertEquals(numberVisitedLocations.get(i) + 1, (int) newNumberVisitedLocations.get(i));
+        // Comparison of VisitedLocations count
+        for (int i = 0; i < initialVisitedLocationsCount.size(); i++) {
+            assertEquals(initialVisitedLocationsCount.get(i) + 1, (int) newVisitedLocationsCount.get(i));
         }
 
         System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
