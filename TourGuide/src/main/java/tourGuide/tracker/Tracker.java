@@ -1,7 +1,6 @@
 package tourGuide.tracker;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -66,11 +65,9 @@ public class Tracker extends Thread {
     }
 
     private CompletableFuture<?> trackUserLocation(User user) {
-        return CompletableFuture.runAsync(() -> {
-            VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-            user.addToVisitedLocations(visitedLocation);
-            rewardsService.calculateRewards(user);
-        });
+        return CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(user.getUserId()))
+                .thenAcceptAsync(user::addToVisitedLocations)
+                .thenRunAsync(() -> rewardsService.calculateRewards(user));
     }
 
 
