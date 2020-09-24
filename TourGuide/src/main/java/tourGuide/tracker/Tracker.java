@@ -10,7 +10,7 @@ import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -22,8 +22,7 @@ public class Tracker extends Thread {
     private final RewardsService rewardsService;
     private final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
     // Concurrency
-    private final ExecutorService executorService = Executors.newFixedThreadPool(11);
-    CountDownLatch countDownLatch = new CountDownLatch(0);
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean stop = false;
 
     public Tracker(TourGuideService tourGuideService, GpsUtil gpsUtil, RewardsService rewardsService) {
@@ -66,12 +65,11 @@ public class Tracker extends Thread {
 
     }
 
-    private void trackUserLocation(User user) {
-        executorService.submit(() -> {
+    private CompletableFuture<?> trackUserLocation(User user) {
+        return CompletableFuture.runAsync(() -> {
             VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
             user.addToVisitedLocations(visitedLocation);
             rewardsService.calculateRewards(user);
-            countDownLatch.countDown();
         });
     }
 
@@ -83,10 +81,11 @@ public class Tracker extends Thread {
      **********************************************************************************/
 
     @Profile("test")
-    public void measureTrackingPerformance(List<User> users) throws InterruptedException {
-        countDownLatch = new CountDownLatch(users.size());
-        users.forEach(this::trackUserLocation);
-        countDownLatch.await();
+    public void measureTrackingPerformance(List<User> users) {
+        CompletableFuture<?>[] futures = users.stream()
+                .map(this::trackUserLocation)
+                .toArray(CompletableFuture[]::new);
+        CompletableFuture.allOf(futures).join();
     }
 
 }
