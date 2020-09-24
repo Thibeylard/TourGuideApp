@@ -2,10 +2,9 @@ package tourGuide.tracker;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -23,10 +22,9 @@ public class Tracker extends Thread {
     private final RewardsService rewardsService;
     private final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
     // Concurrency
-    private final int THREAD_NUMBER = 11;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_NUMBER);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(11);
+    CountDownLatch countDownLatch = new CountDownLatch(0);
     private boolean stop = false;
-    private CountDownLatch countDownLatch;
 
     public Tracker(TourGuideService tourGuideService, GpsUtil gpsUtil, RewardsService rewardsService) {
         this.tourGuideService = tourGuideService;
@@ -49,38 +47,14 @@ public class Tracker extends Thread {
 
     @Override
     public void run() {
-        StopWatch stopWatch = new StopWatch();
         while (true) {
             if (Thread.currentThread().isInterrupted() || stop) {
                 logger.debug("Tracker stopping");
                 break;
             }
 
-            List<User> users = tourGuideService.getAllUsers();
-            logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
+            tourGuideService.getAllUsers().forEach(this::trackUserLocation);
 
-            stopWatch.start();
-            List<List<User>> subsets = ListUtils.partition(users, users.size() % THREAD_NUMBER);
-            countDownLatch = new CountDownLatch(subsets.size());
-            subsets.forEach(userList -> {
-                executorService.submit(() -> {
-                    userList.forEach(user -> {
-                        VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-                        user.addToVisitedLocations(visitedLocation);
-                        rewardsService.calculateRewards(user);
-                    });
-                    countDownLatch.countDown();
-                });
-            });
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            stopWatch.stop();
-
-            logger.debug("Tracker Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
-            stopWatch.reset();
             try {
                 logger.debug("Tracker sleeping");
                 TimeUnit.SECONDS.sleep(trackingPollingInterval);
@@ -92,20 +66,27 @@ public class Tracker extends Thread {
 
     }
 
-    public boolean isTracking() {
-        return countDownLatch != null && countDownLatch.getCount() > 0;
+    private void trackUserLocation(User user) {
+        executorService.submit(() -> {
+            VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+            user.addToVisitedLocations(visitedLocation);
+            rewardsService.calculateRewards(user);
+            countDownLatch.countDown();
+        });
     }
 
-    public void waitTrackingCompletion() {
-        //TODO replace busy waiting by awake and restart process
-        while (!this.isTracking()) {
-        }
 
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    /**********************************************************************************
+     *
+     * Methods Below: For Testing
+     *
+     **********************************************************************************/
+
+    @Profile("test")
+    public void measureTrackingPerformance(List<User> users) throws InterruptedException {
+        countDownLatch = new CountDownLatch(users.size());
+        users.forEach(this::trackUserLocation);
+        countDownLatch.await();
     }
 
 }
