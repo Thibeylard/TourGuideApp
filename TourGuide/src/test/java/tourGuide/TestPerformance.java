@@ -55,7 +55,7 @@ public class TestPerformance {
     @Test
     public void highVolumeTrackLocation() throws InterruptedException {
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
-        InternalTestHelper.setInternalUserNumber(10000);
+        InternalTestHelper.setInternalUserNumber(1000);
         StopWatch stopWatch = new StopWatch();
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
@@ -89,7 +89,7 @@ public class TestPerformance {
     @Test
     public void highVolumeGetRewards() throws InterruptedException {
         // Users should be incremented up to 100,000, and test finishes within 20 minutes
-        InternalTestHelper.setInternalUserNumber(10000);
+        InternalTestHelper.setInternalUserNumber(1000);
         StopWatch stopWatch = new StopWatch();
 
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
@@ -100,7 +100,7 @@ public class TestPerformance {
         );
 
         stopWatch.start();
-        rewardsService.measureRewardingPerformance(allUsers);
+        rewardsService.rewardAndWait(allUsers);
         stopWatch.stop();
 
         System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");

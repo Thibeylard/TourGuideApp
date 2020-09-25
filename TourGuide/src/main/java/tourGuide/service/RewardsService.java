@@ -94,7 +94,7 @@ public class RewardsService {
      **********************************************************************************/
 
     @Profile("test")
-    public void measureRewardingPerformance(List<User> users) throws InterruptedException {
+    public void rewardAndWait(List<User> users) throws InterruptedException {
         countDownLatch = new CountDownLatch(users.size());
         users.forEach(this::calculateRewards);
         countDownLatch.await();
