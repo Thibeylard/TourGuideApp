@@ -60,17 +60,21 @@ public class TourGuideService {
 		}
 		return visitedLocation;
 	}
-	
+
 	public User getUser(String userName) {
 		return internalUserMap.get(userName);
 	}
-	
+
 	public List<User> getAllUsers() {
 		return new ArrayList<>(internalUserMap.values());
 	}
-	
+
+	public List<VisitedLocation> getAllUsersLocation() {
+		return tracker.getAllUserLastLocation();
+	}
+
 	public void addUser(User user) {
-		if(!internalUserMap.containsKey(user.getUserName())) {
+		if (!internalUserMap.containsKey(user.getUserName())) {
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}

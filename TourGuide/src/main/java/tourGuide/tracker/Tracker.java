@@ -1,6 +1,7 @@
 package tourGuide.tracker;
 
 import gpsUtil.GpsUtil;
+import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
@@ -8,6 +9,7 @@ import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +22,7 @@ public class Tracker extends Thread {
     private final GpsUtil gpsUtil;
     private final RewardsService rewardsService;
     private final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
+    private final List<VisitedLocation> allUserLastLocation;
     // Concurrency
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean stop = false;
@@ -28,6 +31,7 @@ public class Tracker extends Thread {
         this.tourGuideService = tourGuideService;
         this.gpsUtil = gpsUtil;
         this.rewardsService = rewardsService;
+        this.allUserLastLocation = new ArrayList<>();
     }
 
     public void startTracking() {
@@ -51,6 +55,7 @@ public class Tracker extends Thread {
                 break;
             }
 
+            allUserLastLocation.clear();
             tourGuideService.getAllUsers().forEach(this::trackUserLocation);
 
             try {
@@ -66,10 +71,16 @@ public class Tracker extends Thread {
 
     private CompletableFuture<?> trackUserLocation(User user) {
         return CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(user.getUserId()))
-                .thenAcceptAsync(user::addToVisitedLocations)
+                .thenAccept(vl -> {
+                    user.addToVisitedLocations(vl);
+                    allUserLastLocation.add(vl);
+                })
                 .thenRunAsync(() -> rewardsService.calculateRewards(user));
     }
 
+    public List<VisitedLocation> getAllUserLastLocation() {
+        return allUserLastLocation;
+    }
 
     /**********************************************************************************
      *
