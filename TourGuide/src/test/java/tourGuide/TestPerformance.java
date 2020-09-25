@@ -17,7 +17,9 @@ import tourGuide.user.User;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -53,13 +55,32 @@ public class TestPerformance {
     @Test
     public void highVolumeTrackLocation() throws InterruptedException {
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
-        InternalTestHelper.setInternalUserNumber(50000);
+        InternalTestHelper.setInternalUserNumber(10000);
         StopWatch stopWatch = new StopWatch();
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+
+        List<User> allUsers = tourGuideService.getAllUsers();
+
+        /*
+            TrackLocation is supposed to add a new VisitedLocation for each user.
+            So VisitedLocation count is saved for each user, and will be compared to new count after tracking.
+        */
+        List<Integer> initialVisitedLocationsCount = allUsers.stream()
+                .map(u -> u.getVisitedLocations().size())
+                .collect(Collectors.toList());
 
         stopWatch.start();
         tourGuideService.tracker.measureTrackingPerformance(tourGuideService.getAllUsers());
         stopWatch.stop();
+
+        List<Integer> newVisitedLocationsCount = allUsers.stream()
+                .map(u -> u.getVisitedLocations().size())
+                .collect(Collectors.toList());
+
+        // Comparison of VisitedLocations count
+        for (int i = 0; i < initialVisitedLocationsCount.size(); i++) {
+            assertEquals(initialVisitedLocationsCount.get(i) + 1, (int) newVisitedLocationsCount.get(i));
+        }
 
         System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");
         assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
