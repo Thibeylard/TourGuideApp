@@ -12,6 +12,7 @@ import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,8 +47,8 @@ public class RewardsService {
         proximityBuffer = defaultProximityBuffer;
     }
 
-    public void calculateRewards(User user) {
-        executorService.submit(() -> {
+    public CompletableFuture<?> calculateRewards(User user) {
+        return CompletableFuture.runAsync(() -> {
             user.getVisitedLocations().forEach(ul -> {
                 attractions.stream()
                         .filter(a -> nearAttraction(ul, a))
@@ -57,7 +58,6 @@ public class RewardsService {
                             }
                         });
             });
-            countDownLatch.countDown();
         });
     }
 
@@ -94,9 +94,10 @@ public class RewardsService {
      **********************************************************************************/
 
     @Profile("test")
-    public void measureRewardingPerformance(List<User> users) throws InterruptedException {
-        countDownLatch = new CountDownLatch(users.size());
-        users.forEach(this::calculateRewards);
-        countDownLatch.await();
+    public void measureRewardingPerformance(List<User> users) {
+        CompletableFuture<?>[] futures = users.stream()
+                .map(this::calculateRewards)
+                .toArray(CompletableFuture[]::new);
+        CompletableFuture.allOf(futures).join();
     }
 }
