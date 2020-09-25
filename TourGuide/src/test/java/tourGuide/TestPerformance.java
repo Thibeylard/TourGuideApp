@@ -70,7 +70,7 @@ public class TestPerformance {
                 .collect(Collectors.toList());
 
         stopWatch.start();
-        tourGuideService.tracker.measureTrackingPerformance(tourGuideService.getAllUsers());
+        tourGuideService.tracker.trackAndWait(tourGuideService.getAllUsers());
         stopWatch.stop();
 
         List<Integer> newVisitedLocationsCount = allUsers.stream()

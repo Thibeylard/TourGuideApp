@@ -78,7 +78,7 @@ public class Tracker extends Thread {
      **********************************************************************************/
 
     @Profile("test")
-    public void measureTrackingPerformance(List<User> users) {
+    public void trackAndWait(List<User> users) {
         CompletableFuture<?>[] futures = users.stream()
                 .map(this::trackUserLocation)
                 .toArray(CompletableFuture[]::new);
