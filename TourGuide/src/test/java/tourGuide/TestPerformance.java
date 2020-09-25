@@ -89,7 +89,7 @@ public class TestPerformance {
     @Test
     public void highVolumeGetRewards() throws InterruptedException {
         // Users should be incremented up to 100,000, and test finishes within 20 minutes
-        InternalTestHelper.setInternalUserNumber(100000);
+        InternalTestHelper.setInternalUserNumber(10000);
         StopWatch stopWatch = new StopWatch();
 
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);

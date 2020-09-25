@@ -11,6 +11,7 @@ import rewardCentral.RewardCentral;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -30,8 +31,8 @@ public class RewardsService {
 
     // Concurrency
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
-    private int proximityBuffer = defaultProximityBuffer;
     CountDownLatch countDownLatch = new CountDownLatch(0);
+    private int proximityBuffer = defaultProximityBuffer;
 
     @Autowired
     public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
@@ -48,17 +49,19 @@ public class RewardsService {
     }
 
     public CompletableFuture<?> calculateRewards(User user) {
-        return CompletableFuture.runAsync(() -> {
-            user.getVisitedLocations().forEach(ul -> {
-                attractions.stream()
-                        .filter(a -> nearAttraction(ul, a))
-                        .forEach(a -> {
-                            if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
-                                user.addUserReward(new UserReward(ul, a, getRewardPoints(a, user)));
-                            }
-                        });
-            });
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        user.getVisitedLocations().forEach(ul -> {
+            attractions.stream()
+                    .filter(a -> nearAttraction(ul, a))
+                    .forEach(a -> {
+                        if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
+                            futures.add(CompletableFuture.runAsync(() ->
+                                    user.addUserReward(new UserReward(ul, a, getRewardPoints(a, user)))));
+                        }
+                    });
         });
+
+        return CompletableFuture.allOf(futures.stream().toArray(CompletableFuture[]::new));
     }
 
     public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
