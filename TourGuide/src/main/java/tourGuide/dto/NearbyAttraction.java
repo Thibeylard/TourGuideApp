@@ -18,4 +18,20 @@ public class NearbyAttraction {
         this.distance = distance;
         this.rewardPoints = rewardPoints;
     }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public int getRewardPoints() {
+        return rewardPoints;
+    }
 }

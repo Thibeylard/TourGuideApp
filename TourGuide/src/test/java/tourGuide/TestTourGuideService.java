@@ -1,5 +1,6 @@
 package tourGuide;
 
+import com.jsoniter.output.JsonStream;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import rewardCentral.RewardCentral;
+import tourGuide.dto.UserAttractionRecommendation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -138,6 +140,29 @@ public class TestTourGuideService {
         assertThat(attractions)
                 .hasSize(5)
                 .containsAll(closestAttractions);
+    }
+
+    @Test
+    public void getUserAttractionRecommendation() {
+        GpsUtil gpsUtil = new GpsUtil();
+        RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+        InternalTestHelper.setInternalUserNumber(1);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+
+        User user = tourGuideService.getAllUsers().get(0);
+        UserAttractionRecommendation userAttractionRecommendation =
+                tourGuideService.getUserAttractionRecommendation(user.getUserName());
+
+        String generatedJson = JsonStream.serialize(userAttractionRecommendation);
+
+        System.out.println(generatedJson);
+
+        assertThat(userAttractionRecommendation.getUserPosition())
+                .isEqualTo(user.getLastVisitedLocation().location);
+
+        assertThat(userAttractionRecommendation.getNearbyAttractions())
+                .hasSize(5);
+
     }
 
     @Ignore

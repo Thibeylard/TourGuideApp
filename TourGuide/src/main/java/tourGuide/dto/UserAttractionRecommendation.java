@@ -15,4 +15,12 @@ public class UserAttractionRecommendation {
         this.userPosition = userPosition;
         this.nearbyAttractions = nearbyAttractions;
     }
+
+    public Location getUserPosition() {
+        return userPosition;
+    }
+
+    public Map<String, NearbyAttraction> getNearbyAttractions() {
+        return nearbyAttractions;
+    }
 }
