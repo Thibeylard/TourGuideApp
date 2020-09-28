@@ -69,8 +69,11 @@ public class TourGuideService {
 		return new ArrayList<>(internalUserMap.values());
 	}
 
-	public List<VisitedLocation> getAllUsersLocation() {
-		return tracker.getAllUserLastLocation();
+	public HashMap<UUID, Location> getAllUsersLastLocation() {
+		HashMap<UUID, Location> usersLastLocation = new HashMap<>();
+		tracker.getAllUserLastLocation()
+				.forEach(vl -> usersLastLocation.put(vl.userId, vl.location));
+		return usersLastLocation;
 	}
 
 	public void addUser(User user) {
