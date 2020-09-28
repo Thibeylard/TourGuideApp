@@ -1,6 +1,7 @@
 package tourGuide;
 
 import gpsUtil.GpsUtil;
+import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
@@ -89,14 +90,15 @@ public class TestPerformance {
     @Test
     public void highVolumeGetRewards() throws InterruptedException {
         // Users should be incremented up to 100,000, and test finishes within 20 minutes
-        InternalTestHelper.setInternalUserNumber(1000);
+        InternalTestHelper.setInternalUserNumber(100000);
         StopWatch stopWatch = new StopWatch();
 
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+        List<Attraction> attractions = gpsUtil.getAttractions();
         List<User> allUsers = tourGuideService.getAllUsers();
 
         allUsers.forEach(u ->
-                u.addToVisitedLocations(new VisitedLocation(u.getUserId(), gpsUtil.getAttractions().get(0), new Date()))
+                u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attractions.get(0), new Date()))
         );
 
         stopWatch.start();
