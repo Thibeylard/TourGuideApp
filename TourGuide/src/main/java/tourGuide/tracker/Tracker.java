@@ -66,10 +66,11 @@ public class Tracker extends Thread {
 
     private CompletableFuture<?> trackUserLocation(User user) {
         return CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(user.getUserId()))
-                .thenAcceptAsync(user::addToVisitedLocations)
+                .thenAccept(vl -> {
+                    user.addToVisitedLocations(vl);
+                })
                 .thenRunAsync(() -> rewardsService.calculateRewards(user));
     }
-
 
     /**********************************************************************************
      *
