@@ -11,8 +11,9 @@ import rewardCentral.RewardCentral;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,7 +31,6 @@ public class RewardsService {
     // Concurrency
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
     private int proximityBuffer = defaultProximityBuffer;
-    CountDownLatch countDownLatch = new CountDownLatch(0);
 
     @Autowired
     public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
@@ -46,19 +46,20 @@ public class RewardsService {
         proximityBuffer = defaultProximityBuffer;
     }
 
-    public void calculateRewards(User user) {
-        executorService.submit(() -> {
-            user.getVisitedLocations().forEach(ul -> {
-                attractions.stream()
-                        .filter(a -> nearAttraction(ul, a))
-                        .forEach(a -> {
-                            if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
-                                user.addUserReward(new UserReward(ul, a, getRewardPoints(a, user)));
-                            }
-                        });
-            });
-            countDownLatch.countDown();
+    public CompletableFuture<?> calculateRewards(User user) {
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+        user.getVisitedLocations().forEach(ul -> {
+            attractions.stream()
+                    .filter(a -> nearAttraction(ul, a))
+                    .forEach(a -> {
+                        if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
+                            futures.add(CompletableFuture.runAsync(() ->
+                                    user.addUserReward(new UserReward(ul, a, getRewardPoints(a, user)))));
+                        }
+                    });
         });
+
+        return CompletableFuture.allOf(futures.stream().toArray(CompletableFuture[]::new));
     }
 
     public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
@@ -94,9 +95,10 @@ public class RewardsService {
      **********************************************************************************/
 
     @Profile("test")
-    public void rewardAndWait(List<User> users) throws InterruptedException {
-        countDownLatch = new CountDownLatch(users.size());
-        users.forEach(this::calculateRewards);
-        countDownLatch.await();
+    public void rewardAndWait(List<User> users) {
+        CompletableFuture<?>[] futures = users.stream()
+                .map(this::calculateRewards)
+                .toArray(CompletableFuture[]::new);
+        CompletableFuture.allOf(futures).join();
     }
 }

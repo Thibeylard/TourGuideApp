@@ -42,11 +42,7 @@ public class TestRewardsService {
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
 		List<User> users = new ArrayList<>();
 		users.add(user);
-		try {
-			rewardsService.rewardAndWait(users);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		rewardsService.rewardAndWait(users);
 		List<UserReward> userRewards = user.getUserRewards();
 		assertEquals(1, userRewards.size());
 	}
@@ -65,11 +61,7 @@ public class TestRewardsService {
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
-		try {
-			rewardsService.rewardAndWait(tourGuideService.getAllUsers());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		rewardsService.rewardAndWait(tourGuideService.getAllUsers());
 
 		rewardsService.setDefaultProximityBuffer();
 
