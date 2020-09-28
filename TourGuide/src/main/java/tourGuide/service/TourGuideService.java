@@ -92,8 +92,19 @@ public class TourGuideService {
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
+		Attraction farthestAttraction;
 		for (Attraction attraction : gpsUtil.getAttractions()) {
-			if (rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
+			if (nearbyAttractions.size() == 5) {
+				farthestAttraction = nearbyAttractions.stream()
+						.max(Comparator.comparing(
+								attraction1 -> rewardsService.getDistance(visitedLocation.location, attraction1)))
+						.get();
+
+				if (rewardsService.getDistance(attraction, visitedLocation.location) < rewardsService.getDistance(farthestAttraction, visitedLocation.location)) {
+					nearbyAttractions.add(attraction);
+					nearbyAttractions.remove(farthestAttraction);
+				}
+			} else {
 				nearbyAttractions.add(attraction);
 			}
 		}
