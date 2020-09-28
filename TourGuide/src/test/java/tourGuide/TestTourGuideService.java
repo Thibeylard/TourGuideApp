@@ -1,7 +1,9 @@
 package tourGuide;
 
+import com.jsoniter.output.JsonStream;
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
+import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,10 +18,14 @@ import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tripPricer.Provider;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -78,8 +84,6 @@ public class TestTourGuideService {
 
 		List<User> allUsers = tourGuideService.getAllUsers();
 
-		tourGuideService.tracker.stopTracking();
-
 		assertTrue(allUsers.contains(user));
 		assertTrue(allUsers.contains(user2));
 	}
@@ -98,11 +102,39 @@ public class TestTourGuideService {
 
 		int visitedLocationCount = user.getVisitedLocations().size();
 
-		tourGuideService.tracker.startTracking();
 		tourGuideService.tracker.trackAndWait(users);
-		tourGuideService.tracker.stopTracking();
 
 		assertEquals(visitedLocationCount + 1, user.getVisitedLocations().size());
+	}
+
+	@Test
+	public void getAllUserLocations() {
+		GpsUtil gpsUtil = new GpsUtil();
+		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		InternalTestHelper.setInternalUserNumber(100);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+
+		HashMap<String, Location> allUsersLastLocation = tourGuideService.getAllUsersLastLocation();
+		String generatedJson = JsonStream.serialize(allUsersLastLocation);
+
+		System.out.println(generatedJson);
+
+		StringBuilder manualJson = new StringBuilder("{");
+		allUsersLastLocation.forEach((id, location) ->
+				manualJson.append("\"")
+						.append(id)
+						.append("\":")
+						.append("{\"longitude\":").append(BigDecimal.valueOf(location.longitude).setScale(6, RoundingMode.HALF_UP).doubleValue())
+						.append(",")
+						.append("\"latitude\":").append(BigDecimal.valueOf(location.latitude).setScale(6, RoundingMode.HALF_UP).doubleValue())
+						.append("},")
+		);
+		manualJson.deleteCharAt(manualJson.length() - 1).append("}");
+
+		System.out.println(manualJson.toString());
+
+		assertThat(manualJson.toString())
+				.isEqualToIgnoringWhitespace(generatedJson);
 	}
 
 	@Ignore // Not yet implemented
