@@ -141,10 +141,10 @@ public class TestTourGuideService {
 
 	@Test
 	public void getNearbyAttractions() {
-		GpsUtil gpsUtilSpy = spy(new GpsUtil());
-		RewardsService rewardsServiceSpy = spy(new RewardsService(gpsUtil, new RewardCentral()));
-		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+        GpsUtil gpsUtilSpy = spy(new GpsUtil());
+        RewardsService rewardsServiceSpy = spy(new RewardsService(gpsUtilSpy, new RewardCentral()));
+        InternalTestHelper.setInternalUserNumber(0);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilSpy, rewardsServiceSpy);
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
