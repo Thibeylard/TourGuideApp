@@ -4,6 +4,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import tourGuide.dto.UserAttractionRecommendation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -161,21 +163,33 @@ public class TourGuideService {
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
 			generateUserLocationHistory(user);
-			
+			generateUserPreferences(user);
+
 			internalUserMap.put(userName, user);
 		});
 		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
 	}
-	
+
+	private void generateUserPreferences(User user) {
+		UserPreferences userPreferences = new UserPreferences();
+		userPreferences.setNumberOfAdults(new Random().nextInt(3) + 1);
+		userPreferences.setNumberOfChildren(new Random().nextInt(5));
+		userPreferences.setLowerPricePoint(Money.of(new Random().nextInt(1000), userPreferences.getCurrency()));
+		userPreferences.setHighPricePoint(Money.of(new Random().nextInt(5000), userPreferences.getCurrency()).add(userPreferences.getLowerPricePoint()));
+		userPreferences.setTripDuration(new Random().nextInt(14) + 1);
+		userPreferences.setTicketQuantity(userPreferences.getNumberOfAdults() + userPreferences.getNumberOfChildren() / 2);
+		user.setUserPreferences(userPreferences);
+	}
+
 	private void generateUserLocationHistory(User user) {
-		IntStream.range(0, 3).forEach(i-> {
+		IntStream.range(0, 3).forEach(i -> {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
 		});
 	}
-	
+
 	private double generateRandomLongitude() {
 		double leftLimit = -180;
-	    double rightLimit = 180;
+		double rightLimit = 180;
 	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
 	}
 	
