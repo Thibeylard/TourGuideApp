@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tourGuide.dto.NearbyAttraction;
+import tourGuide.dto.UserAttractionRecommendation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -89,6 +91,21 @@ public class TourGuideService {
 		return providers;
 	}
 
+	public UserAttractionRecommendation getUserAttractionRecommendation(String username) {
+		VisitedLocation userLastLocation = getUser(username).getLastVisitedLocation();
+		List<Attraction> nearbyAttractions = getNearByAttractions(userLastLocation);
+		Map<String, NearbyAttraction> nearbyAttractionHashMap = new HashMap<>();
+		nearbyAttractions.forEach(att ->
+				nearbyAttractionHashMap.put(
+						att.attractionName,
+						new NearbyAttraction(
+								att.latitude,
+								att.longitude,
+								rewardsService.getDistance(att, userLastLocation.location),
+								rewardsService.getRewardPoints(att, getUser(username))))
+		);
+		return new UserAttractionRecommendation(userLastLocation.location, nearbyAttractionHashMap);
+	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
@@ -108,7 +125,7 @@ public class TourGuideService {
 				nearbyAttractions.add(attraction);
 			}
 		}
-		
+
 		return nearbyAttractions;
 	}
 
