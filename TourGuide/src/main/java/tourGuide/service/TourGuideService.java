@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tourGuide.dto.NearbyAttraction;
 import tourGuide.dto.UserAttractionRecommendation;
+import tourGuide.dto.UserPreferencesDTO;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -135,25 +136,11 @@ public class TourGuideService {
 	 **********************************************************************************/
 	private static final String tripPricerApiKey = "test-server-api-key";
 
-	public UserPreferences updateUserPreferences(String username,
-												 int attractionProximity,
-												 Money lowerPricePoint,
-												 Money highPricePoint,
-												 int tripDuration,
-												 int ticketQuantity,
-												 int numberOfAdults,
-												 int numberOfChildren) {
-		User user = getUser(username);
-		UserPreferences updates = new UserPreferences(attractionProximity,
-				lowerPricePoint,
-				highPricePoint,
-				tripDuration,
-				ticketQuantity,
-				numberOfAdults,
-				numberOfChildren);
-		user.setUserPreferences(updates);
+	public UserPreferences updateUserPreferences(UserPreferencesDTO preferencesUpdate) {
+		User user = getUser(preferencesUpdate.getUsername());
+		user.setUserPreferences(new UserPreferences(preferencesUpdate));
 
-		return updates;
+		return user.getUserPreferences();
 	}
 
 	private void addShutDownHook() {
