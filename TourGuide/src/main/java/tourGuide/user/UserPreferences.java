@@ -1,6 +1,7 @@
 package tourGuide.user;
 
 import org.javamoney.moneta.Money;
+import tourGuide.dto.UserPreferencesDTO;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
@@ -20,14 +21,14 @@ public class UserPreferences {
 	public UserPreferences() {
 	}
 
-	public UserPreferences(int attractionProximity, Money lowerPricePoint, Money highPricePoint, int tripDuration, int ticketQuantity, int numberOfAdults, int numberOfChildren) {
-		this.attractionProximity = attractionProximity;
-		this.lowerPricePoint = lowerPricePoint;
-		this.highPricePoint = highPricePoint;
-		this.tripDuration = tripDuration;
-		this.ticketQuantity = ticketQuantity;
-		this.numberOfAdults = numberOfAdults;
-		this.numberOfChildren = numberOfChildren;
+	public UserPreferences(UserPreferencesDTO preferencesDTO) {
+		this.attractionProximity = preferencesDTO.getAttractionProximity();
+		this.lowerPricePoint = preferencesDTO.getLowerPricePoint();
+		this.highPricePoint = preferencesDTO.getHighPricePoint();
+		this.tripDuration = preferencesDTO.getTripDuration();
+		this.ticketQuantity = preferencesDTO.getTicketQuantity();
+		this.numberOfAdults = preferencesDTO.getNumberOfAdults();
+		this.numberOfChildren = preferencesDTO.getNumberOfChildren();
 	}
 
 	public void setAttractionProximity(int attractionProximity) {
