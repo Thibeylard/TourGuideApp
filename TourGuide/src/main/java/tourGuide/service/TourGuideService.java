@@ -20,6 +20,7 @@ import tripPricer.TripPricer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -114,27 +115,16 @@ public class TourGuideService {
 		return new UserAttractionRecommendation(userLastLocation.location, nearbyAttractionHashMap);
 	}
 
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		Attraction farthestAttraction;
-		for (Attraction attraction : gpsUtil.getAttractions()) {
-			if (nearbyAttractions.size() == 5) {
-				farthestAttraction = nearbyAttractions.stream()
-						.max(Comparator.comparing(
-								attraction1 -> rewardsService.getDistance(visitedLocation.location, attraction1)))
-						.get();
+    public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+        List<Attraction> nearbyAttractions = gpsUtil.getAttractions();
+        nearbyAttractions = nearbyAttractions.stream()
+                .sorted(Comparator.comparing(
+                        attraction -> rewardsService.getDistance(visitedLocation.location, attraction)))
+                .limit(5)
+                .collect(Collectors.toList());
 
-				if (rewardsService.getDistance(attraction, visitedLocation.location) < rewardsService.getDistance(farthestAttraction, visitedLocation.location)) {
-					nearbyAttractions.add(attraction);
-					nearbyAttractions.remove(farthestAttraction);
-				}
-			} else {
-				nearbyAttractions.add(attraction);
-			}
-		}
-
-		return nearbyAttractions;
-	}
+        return nearbyAttractions;
+    }
 
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
