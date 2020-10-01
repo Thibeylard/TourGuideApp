@@ -47,11 +47,11 @@ public class TourGuideService {
 		this.tracker = new Tracker(this, gpsUtil, rewardsService);
 		addShutDownHook();
 	}
-	
+
 	public List<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
-	
+
 	public VisitedLocation getUserLocation(User user) {
 		VisitedLocation visitedLocation;
 
@@ -138,22 +138,43 @@ public class TourGuideService {
 		return nearbyAttractions;
 	}
 
-	private void addShutDownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() { 
-		      public void run() {
-				  if (!testMode) {
-					  tracker.stopTracking();
-				  }
-			  }
-		    }); 
-	}
-	
 	/**********************************************************************************
-	 * 
+	 *
 	 * Methods Below: For Internal Testing
-	 * 
+	 *
 	 **********************************************************************************/
 	private static final String tripPricerApiKey = "test-server-api-key";
+
+	public UserPreferences updateUserPreferences(String username,
+												 int attractionProximity,
+												 Money lowerPricePoint,
+												 Money highPricePoint,
+												 int tripDuration,
+												 int ticketQuantity,
+												 int numberOfAdults,
+												 int numberOfChildren) {
+		User user = getUser(username);
+		UserPreferences updates = new UserPreferences(attractionProximity,
+				lowerPricePoint,
+				highPricePoint,
+				tripDuration,
+				ticketQuantity,
+				numberOfAdults,
+				numberOfChildren);
+		user.setUserPreferences(updates);
+
+		return updates;
+	}
+
+	private void addShutDownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				if (!testMode) {
+					tracker.stopTracking();
+				}
+			}
+		});
+	}
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
 	private final Map<String, User> internalUserMap = new HashMap<>();
 	private void initializeInternalUsers() {
@@ -192,16 +213,16 @@ public class TourGuideService {
 		double rightLimit = 180;
 	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
 	}
-	
+
 	private double generateRandomLatitude() {
 		double leftLimit = -85.05112878;
 	    double rightLimit = 85.05112878;
 	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
 	}
-	
+
 	private Date getRandomTime() {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 	    return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
-	
+
 }
