@@ -122,13 +122,13 @@ public class TestTourGuideService {
         List<Attraction> mockAttractions = new ArrayList<>();
         List<Attraction> closestAttractions = new ArrayList<>();
         Attraction mockAttraction;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 10; i > 0; i--) {
             mockAttraction = mock(Attraction.class);
             doReturn((double) i).when(rewardsServiceSpy).getDistance(mockAttraction, visitedLocation.location);
             doReturn((double) i).when(rewardsServiceSpy).getDistance(visitedLocation.location, mockAttraction);
             mockAttractions.add(mockAttraction);
 
-            if (closestAttractions.size() < 5) {
+            if (i < 6) {
                 closestAttractions.add(mockAttraction);
             }
         }
