@@ -28,34 +28,47 @@ public class TourGuideController {
         return "Greetings from TourGuide!";
     }
 
-    @RequestMapping("/getLocation")
-    public String getLocation(@RequestParam String userName) {
-        VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-        return JsonStream.serialize(visitedLocation.location);
-    }
-    
-    @RequestMapping("/getNearbyAttractions")
-    public String getNearbyAttractions(@RequestParam String userName) {
-        return JsonStream.serialize(tourGuideService.getUserAttractionRecommendation(userName));
-    }
-    
-    @RequestMapping("/getRewards") 
-    public String getRewards(@RequestParam String userName) {
-    	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
+    //TODO secure endpoint
+    @RequestMapping("/admin/action/startTracker")
+    public void startTracker() {
+        tourGuideService.tracker.startTracking();
     }
 
-    @RequestMapping("/getAllCurrentLocations")
+    // TODO secure endpoint
+    @RequestMapping("/admin/action/stopTracker")
+    public void stopTracker() {
+        tourGuideService.tracker.stopTracking();
+    }
+
+    // TODO secure endpoint
+    @RequestMapping("/admin/action/getAllUsersLocations")
     public String getAllCurrentLocations() {
         return JsonStream.serialize(tourGuideService.getAllUsersLastLocation());
     }
 
-    @RequestMapping("/getTripDeals")
+    @RequestMapping("/user/getLocation")
+    public String getLocation(@RequestParam String userName) {
+        VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+        return JsonStream.serialize(visitedLocation.location);
+    }
+
+    @RequestMapping("/user/getNearbyAttractions")
+    public String getNearbyAttractions(@RequestParam String userName) {
+        return JsonStream.serialize(tourGuideService.getUserAttractionRecommendation(userName));
+    }
+
+    @RequestMapping("/user/getRewards")
+    public String getRewards(@RequestParam String userName) {
+    	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
+    }
+
+    @RequestMapping("/user/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
         List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
         return JsonStream.serialize(providers);
     }
 
-    @RequestMapping("/updatePreferences")
+    @RequestMapping("/user/updatePreferences")
     public String updatePreferences(@RequestParam String userName,
                                     @RequestParam int attractionProximity,
                                     @RequestParam Money lowerPricePoint,
