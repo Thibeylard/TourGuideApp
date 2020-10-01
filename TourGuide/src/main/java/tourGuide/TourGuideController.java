@@ -2,11 +2,12 @@ package tourGuide;
 
 import com.jsoniter.output.JsonStream;
 import gpsUtil.location.VisitedLocation;
-import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tourGuide.dto.UserPreferencesDTO;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tripPricer.Provider;
@@ -56,23 +57,9 @@ public class TourGuideController {
     }
 
     @RequestMapping("/updatePreferences")
-    public String updatePreferences(@RequestParam String userName,
-                                    @RequestParam int attractionProximity,
-                                    @RequestParam Money lowerPricePoint,
-                                    @RequestParam Money highPricePoint,
-                                    @RequestParam int tripDuration,
-                                    @RequestParam int ticketQuantity,
-                                    @RequestParam int numberOfAdults,
-                                    @RequestParam int numberOfChildren) {
+    public String updatePreferences(@RequestBody UserPreferencesDTO preferencesUpdate) {
         return JsonStream.serialize(
-                tourGuideService.updateUserPreferences(userName,
-                        attractionProximity,
-                        lowerPricePoint,
-                        highPricePoint,
-                        tripDuration,
-                        ticketQuantity,
-                        numberOfAdults,
-                        numberOfChildren));
+                tourGuideService.updateUserPreferences(preferencesUpdate));
     }
 
     private User getUser(String userName) {
