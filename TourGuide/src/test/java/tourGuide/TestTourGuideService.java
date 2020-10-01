@@ -22,7 +22,7 @@ import tripPricer.Provider;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,7 +113,7 @@ public class TestTourGuideService {
 		InternalTestHelper.setInternalUserNumber(100);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
-		HashMap<String, Location> allUsersLastLocation = tourGuideService.getAllUsersLastLocation();
+		LinkedHashMap<String, Location> allUsersLastLocation = new LinkedHashMap<>(tourGuideService.getAllUsersLastLocation());
 		String generatedJson = JsonStream.serialize(allUsersLastLocation);
 
 		System.out.println(generatedJson);
