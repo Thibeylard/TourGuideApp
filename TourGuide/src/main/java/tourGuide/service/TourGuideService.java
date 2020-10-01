@@ -4,6 +4,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import tourGuide.dto.UserAttractionRecommendation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
@@ -46,11 +48,11 @@ public class TourGuideService {
 		this.tracker = new Tracker(this, gpsUtil, rewardsService);
 		addShutDownHook();
 	}
-	
+
 	public List<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
-	
+
 	public VisitedLocation getUserLocation(User user) {
 		VisitedLocation visitedLocation;
 
@@ -126,22 +128,43 @@ public class TourGuideService {
         return nearbyAttractions;
     }
 
-	private void addShutDownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() { 
-		      public void run() {
-				  if (!testMode) {
-					  tracker.stopTracking();
-				  }
-			  }
-		    }); 
-	}
-	
 	/**********************************************************************************
-	 * 
+	 *
 	 * Methods Below: For Internal Testing
-	 * 
+	 *
 	 **********************************************************************************/
 	private static final String tripPricerApiKey = "test-server-api-key";
+
+	public UserPreferences updateUserPreferences(String username,
+												 int attractionProximity,
+												 Money lowerPricePoint,
+												 Money highPricePoint,
+												 int tripDuration,
+												 int ticketQuantity,
+												 int numberOfAdults,
+												 int numberOfChildren) {
+		User user = getUser(username);
+		UserPreferences updates = new UserPreferences(attractionProximity,
+				lowerPricePoint,
+				highPricePoint,
+				tripDuration,
+				ticketQuantity,
+				numberOfAdults,
+				numberOfChildren);
+		user.setUserPreferences(updates);
+
+		return updates;
+	}
+
+	private void addShutDownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				if (!testMode) {
+					tracker.stopTracking();
+				}
+			}
+		});
+	}
 	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
 	private final Map<String, User> internalUserMap = new HashMap<>();
 	private void initializeInternalUsers() {
@@ -151,33 +174,45 @@ public class TourGuideService {
 			String email = userName + "@tourGuide.com";
 			User user = new User(UUID.randomUUID(), userName, phone, email);
 			generateUserLocationHistory(user);
-			
+			generateUserPreferences(user);
+
 			internalUserMap.put(userName, user);
 		});
 		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
 	}
-	
+
+	private void generateUserPreferences(User user) {
+		UserPreferences userPreferences = new UserPreferences();
+		userPreferences.setNumberOfAdults(new Random().nextInt(3) + 1);
+		userPreferences.setNumberOfChildren(new Random().nextInt(5));
+		userPreferences.setLowerPricePoint(Money.of(new Random().nextInt(1000), userPreferences.getCurrency()));
+		userPreferences.setHighPricePoint(Money.of(new Random().nextInt(5000), userPreferences.getCurrency()).add(userPreferences.getLowerPricePoint()));
+		userPreferences.setTripDuration(new Random().nextInt(14) + 1);
+		userPreferences.setTicketQuantity(userPreferences.getNumberOfAdults() + userPreferences.getNumberOfChildren() / 2);
+		user.setUserPreferences(userPreferences);
+	}
+
 	private void generateUserLocationHistory(User user) {
-		IntStream.range(0, 3).forEach(i-> {
+		IntStream.range(0, 3).forEach(i -> {
 			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
 		});
 	}
-	
+
 	private double generateRandomLongitude() {
 		double leftLimit = -180;
-	    double rightLimit = 180;
+		double rightLimit = 180;
 	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
 	}
-	
+
 	private double generateRandomLatitude() {
 		double leftLimit = -85.05112878;
 	    double rightLimit = 85.05112878;
 	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
 	}
-	
+
 	private Date getRandomTime() {
 		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
 	    return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
-	
+
 }

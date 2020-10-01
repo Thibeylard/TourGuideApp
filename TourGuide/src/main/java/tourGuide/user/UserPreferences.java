@@ -1,33 +1,43 @@
 package tourGuide.user;
 
+import org.javamoney.moneta.Money;
+
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
 
-import org.javamoney.moneta.Money;
-
 
 public class UserPreferences {
-	
+
 	private int attractionProximity = Integer.MAX_VALUE;
-	private CurrencyUnit currency = Monetary.getCurrency("USD");
+	private final CurrencyUnit currency = Monetary.getCurrency("USD");
 	private Money lowerPricePoint = Money.of(0, currency);
 	private Money highPricePoint = Money.of(Integer.MAX_VALUE, currency);
 	private int tripDuration = 1;
 	private int ticketQuantity = 1;
 	private int numberOfAdults = 1;
 	private int numberOfChildren = 0;
-	
+
 	public UserPreferences() {
 	}
-	
+
+	public UserPreferences(int attractionProximity, Money lowerPricePoint, Money highPricePoint, int tripDuration, int ticketQuantity, int numberOfAdults, int numberOfChildren) {
+		this.attractionProximity = attractionProximity;
+		this.lowerPricePoint = lowerPricePoint;
+		this.highPricePoint = highPricePoint;
+		this.tripDuration = tripDuration;
+		this.ticketQuantity = ticketQuantity;
+		this.numberOfAdults = numberOfAdults;
+		this.numberOfChildren = numberOfChildren;
+	}
+
 	public void setAttractionProximity(int attractionProximity) {
 		this.attractionProximity = attractionProximity;
 	}
-	
+
 	public int getAttractionProximity() {
 		return attractionProximity;
 	}
-	
+
 	public Money getLowerPricePoint() {
 		return lowerPricePoint;
 	}
@@ -76,4 +86,7 @@ public class UserPreferences {
 		this.numberOfChildren = numberOfChildren;
 	}
 
+	public CurrencyUnit getCurrency() {
+		return currency;
+	}
 }

@@ -5,7 +5,6 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,7 +191,6 @@ public class TestTourGuideService {
 
     }
 
-    @Ignore
     @Test
     public void getTripDeals() {
         GpsUtil gpsUtil = new GpsUtil();
@@ -203,10 +201,16 @@ public class TestTourGuideService {
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 
         List<Provider> providers = tourGuideService.getTripDeals(user);
+        for (Provider provider :
+                providers) {
+            System.out.println("--------------- TRIP -------------");
+            System.out.println("Name :" + provider.name);
+            System.out.println("Price :" + provider.price);
+            System.out.println("ID :" + provider.tripId);
+            System.out.println("==================================");
+        }
 
-        tourGuideService.tracker.stopTracking();
-
-        assertEquals(10, providers.size());
+        assertEquals(5, providers.size());
     }
 
 

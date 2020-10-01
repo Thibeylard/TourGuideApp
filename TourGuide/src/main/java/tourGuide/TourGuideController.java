@@ -2,6 +2,7 @@ package tourGuide;
 
 import com.jsoniter.output.JsonStream;
 import gpsUtil.location.VisitedLocation;
+import org.javamoney.moneta.Money;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,21 +43,41 @@ public class TourGuideController {
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
-    
+
     @RequestMapping("/getAllCurrentLocations")
     public String getAllCurrentLocations() {
         return JsonStream.serialize(tourGuideService.getAllUsersLastLocation());
     }
-    
+
     @RequestMapping("/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
-    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
-    	return JsonStream.serialize(providers);
+        List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
+        return JsonStream.serialize(providers);
     }
-    
+
+    @RequestMapping("/updatePreferences")
+    public String updatePreferences(@RequestParam String userName,
+                                    @RequestParam int attractionProximity,
+                                    @RequestParam Money lowerPricePoint,
+                                    @RequestParam Money highPricePoint,
+                                    @RequestParam int tripDuration,
+                                    @RequestParam int ticketQuantity,
+                                    @RequestParam int numberOfAdults,
+                                    @RequestParam int numberOfChildren) {
+        return JsonStream.serialize(
+                tourGuideService.updateUserPreferences(userName,
+                        attractionProximity,
+                        lowerPricePoint,
+                        highPricePoint,
+                        tripDuration,
+                        ticketQuantity,
+                        numberOfAdults,
+                        numberOfChildren));
+    }
+
     private User getUser(String userName) {
-    	return tourGuideService.getUser(userName);
+        return tourGuideService.getUser(userName);
     }
-   
+
 
 }
