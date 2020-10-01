@@ -1,4 +1,4 @@
-package tourGuide;
+package tourGuide.unit;
 
 import com.jsoniter.output.JsonStream;
 import gpsUtil.GpsUtil;
