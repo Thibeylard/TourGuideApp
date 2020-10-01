@@ -17,6 +17,7 @@ import tourGuide.user.User;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -71,7 +72,10 @@ public class TestPerformance {
                 .collect(Collectors.toList());
 
         stopWatch.start();
-        tourGuideService.tracker.trackAndWait(tourGuideService.getAllUsers());
+        CompletableFuture<?>[] futures = allUsers.stream()
+                .map(tourGuideService.tracker::trackUserLocation)
+                .toArray(CompletableFuture[]::new);
+        CompletableFuture.allOf(futures).join();
         stopWatch.stop();
 
         List<Integer> newVisitedLocationsCount = allUsers.stream()
@@ -102,7 +106,11 @@ public class TestPerformance {
         );
 
         stopWatch.start();
-        rewardsService.rewardAndWait(allUsers);
+        CompletableFuture<?>[] futures = allUsers.stream()
+                .map(rewardsService::calculateRewards)
+                .toArray(CompletableFuture[]::new);
+        CompletableFuture.allOf(futures).join();
+        ;
         stopWatch.stop();
 
         System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");

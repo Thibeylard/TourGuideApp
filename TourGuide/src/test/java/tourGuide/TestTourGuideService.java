@@ -99,12 +99,9 @@ public class TestTourGuideService {
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 
-        List<User> users = new ArrayList<>();
-        users.add(user);
-
         int visitedLocationCount = user.getVisitedLocations().size();
 
-		tourGuideService.tracker.trackAndWait(users);
+        tourGuideService.tracker.trackUserLocation(user).join();
 
         assertEquals(visitedLocationCount + 1, user.getVisitedLocations().size());
     }

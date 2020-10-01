@@ -5,7 +5,6 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
 import tourGuide.user.User;
@@ -85,20 +84,5 @@ public class RewardsService {
 
         double nauticalMiles = 60 * Math.toDegrees(angle);
         return STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
-    }
-
-
-    /**********************************************************************************
-     *
-     * Methods Below: For Testing
-     *
-     **********************************************************************************/
-
-    @Profile("test")
-    public void rewardAndWait(List<User> users) {
-        CompletableFuture<?>[] futures = users.stream()
-                .map(this::calculateRewards)
-                .toArray(CompletableFuture[]::new);
-        CompletableFuture.allOf(futures).join();
     }
 }

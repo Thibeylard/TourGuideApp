@@ -14,10 +14,10 @@ import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,9 +40,9 @@ public class TestRewardsService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
-		List<User> users = new ArrayList<>();
-		users.add(user);
-		rewardsService.rewardAndWait(users);
+
+		rewardsService.calculateRewards(user).join();
+
 		List<UserReward> userRewards = user.getUserRewards();
 		assertEquals(1, userRewards.size());
 	}
@@ -61,7 +61,10 @@ public class TestRewardsService {
 		InternalTestHelper.setInternalUserNumber(1);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
-		rewardsService.rewardAndWait(tourGuideService.getAllUsers());
+		CompletableFuture<?>[] futures = tourGuideService.getAllUsers().stream()
+				.map(rewardsService::calculateRewards)
+				.toArray(CompletableFuture[]::new);
+		CompletableFuture.allOf(futures).join();
 
 		rewardsService.setDefaultProximityBuffer();
 

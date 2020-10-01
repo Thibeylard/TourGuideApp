@@ -3,12 +3,10 @@ package tourGuide.tracker;
 import gpsUtil.GpsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,7 +49,10 @@ public class Tracker extends Thread {
                 break;
             }
 
-            tourGuideService.getAllUsers().forEach(this::trackUserLocation);
+            CompletableFuture<?>[] futures = tourGuideService.getAllUsers().stream()
+                    .map(this::trackUserLocation)
+                    .toArray(CompletableFuture[]::new);
+            CompletableFuture.allOf(futures).join(); // waiting so that Tracker does not keep asking CompletableFutures
 
             try {
                 logger.debug("Tracker sleeping");
@@ -64,24 +65,10 @@ public class Tracker extends Thread {
 
     }
 
-    private CompletableFuture<?> trackUserLocation(User user) {
+    public CompletableFuture<?> trackUserLocation(User user) {
         return CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(user.getUserId()))
                 .thenAccept(user::addToVisitedLocations)
                 .thenRunAsync(() -> rewardsService.calculateRewards(user));
-    }
-
-    /**********************************************************************************
-     *
-     * Methods Below: For Testing
-     *
-     **********************************************************************************/
-
-    @Profile("test")
-    public void trackAndWait(List<User> users) {
-        CompletableFuture<?>[] futures = users.stream()
-                .map(this::trackUserLocation)
-                .toArray(CompletableFuture[]::new);
-        CompletableFuture.allOf(futures).join();
     }
 
 }
