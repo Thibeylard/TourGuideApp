@@ -20,7 +20,7 @@ public class Tracker extends Thread {
     private final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
     // Concurrency
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private boolean stop = false;
+    private boolean stop = true;
 
     public Tracker(TourGuideService tourGuideService, GpsUtil gpsUtil, RewardsService rewardsService) {
         this.tourGuideService = tourGuideService;
@@ -38,6 +38,7 @@ public class Tracker extends Thread {
      */
     public void stopTracking() {
         stop = true;
+        logger.debug("Tracker shutting down");
         executorService.shutdownNow();
     }
 
@@ -71,4 +72,7 @@ public class Tracker extends Thread {
                 .thenRunAsync(() -> rewardsService.calculateRewards(user));
     }
 
+    public boolean isStopped() {
+        return stop;
+    }
 }
