@@ -1,21 +1,26 @@
 package tourGuide.dto;
 
-import org.javamoney.moneta.Money;
+import com.jsoniter.annotation.JsonCreator;
+import tourGuide.user.UserPreferences;
 
 public class UserPreferencesDTO {
-    private final String username;
-    private final int attractionProximity;
-    private final Money lowerPricePoint;
-    private final Money highPricePoint;
-    private final int tripDuration;
-    private final int ticketQuantity;
-    private final int numberOfAdults;
-    private final int numberOfChildren;
+    private String username;
+    private int attractionProximity;
+    private int lowerPricePoint;
+    private int highPricePoint;
+    private int tripDuration;
+    private int ticketQuantity;
+    private int numberOfAdults;
+    private int numberOfChildren;
+
+    @JsonCreator
+    private UserPreferencesDTO() {
+    }
 
     public UserPreferencesDTO(String username,
                               int attractionProximity,
-                              Money lowerPricePoint,
-                              Money highPricePoint,
+                              int lowerPricePoint,
+                              int highPricePoint,
                               int tripDuration,
                               int ticketQuantity,
                               int numberOfAdults,
@@ -30,6 +35,17 @@ public class UserPreferencesDTO {
         this.numberOfChildren = numberOfChildren;
     }
 
+    public UserPreferencesDTO(String username, UserPreferences userPreferences) {
+        this.username = username;
+        this.attractionProximity = userPreferences.getAttractionProximity();
+        this.lowerPricePoint = userPreferences.getLowerPricePoint().getNumber().intValueExact();
+        this.highPricePoint = userPreferences.getHighPricePoint().getNumber().intValueExact();
+        this.tripDuration = userPreferences.getTripDuration();
+        this.ticketQuantity = userPreferences.getTicketQuantity();
+        this.numberOfAdults = userPreferences.getNumberOfAdults();
+        this.numberOfChildren = userPreferences.getNumberOfChildren();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -38,11 +54,11 @@ public class UserPreferencesDTO {
         return attractionProximity;
     }
 
-    public Money getLowerPricePoint() {
+    public int getLowerPricePoint() {
         return lowerPricePoint;
     }
 
-    public Money getHighPricePoint() {
+    public int getHighPricePoint() {
         return highPricePoint;
     }
 

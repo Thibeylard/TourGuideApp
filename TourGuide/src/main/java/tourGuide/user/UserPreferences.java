@@ -23,8 +23,8 @@ public class UserPreferences {
 
 	public UserPreferences(UserPreferencesDTO preferencesDTO) {
 		this.attractionProximity = preferencesDTO.getAttractionProximity();
-		this.lowerPricePoint = preferencesDTO.getLowerPricePoint();
-		this.highPricePoint = preferencesDTO.getHighPricePoint();
+		this.lowerPricePoint = Money.of(preferencesDTO.getLowerPricePoint(), currency);
+		this.highPricePoint = Money.of(preferencesDTO.getHighPricePoint(), currency);
 		this.tripDuration = preferencesDTO.getTripDuration();
 		this.ticketQuantity = preferencesDTO.getTicketQuantity();
 		this.numberOfAdults = preferencesDTO.getNumberOfAdults();

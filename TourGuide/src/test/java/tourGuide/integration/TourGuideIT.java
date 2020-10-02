@@ -2,6 +2,7 @@ package tourGuide.integration;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
+import com.jsoniter.output.JsonStream;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.Before;
@@ -9,13 +10,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import tourGuide.dto.UserPreferencesDTO;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
+import tourGuide.user.UserPreferences;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -54,7 +60,7 @@ public class TourGuideIT {
         TimeUnit.SECONDS.sleep(1);
 
         assertThat(someUser.getLastVisitedLocation()) // Still not tracked.
-                .usingDefaultComparator()
+                .usingRecursiveComparison()
                 .isEqualTo(previousLocation);
 
         mockMvc.perform(get("/admin/action/startTracker"));
@@ -64,7 +70,7 @@ public class TourGuideIT {
         TimeUnit.SECONDS.sleep(1); // 1 second sleep is enough for 100 users to be located
 
         assertThat(someUser.getLastVisitedLocation()) // Users have been successfully tracked
-                .usingDefaultComparator()
+                .usingRecursiveComparison()
                 .isNotEqualTo(previousLocation);
 
         mockMvc.perform(get("/admin/action/stopTracker"));
@@ -99,6 +105,48 @@ public class TourGuideIT {
                     .isEqualTo(BigDecimal.valueOf(userLastLocation.longitude).setScale(6, RoundingMode.HALF_UP).doubleValue());
 
         });
+    }
 
+    @Test
+    public void updateUserPreferences() throws Exception {
+        User someUser = tourGuideService.getAllUsers().get(10);
+
+        UserPreferencesDTO oldPreferences = new UserPreferencesDTO(
+                someUser.getUserName(),
+                1500,
+                1000,
+                2000,
+                15,
+                3,
+                2,
+                1);
+
+        someUser.setUserPreferences(new UserPreferences(oldPreferences));
+
+        assertThat(someUser.getUserPreferences())
+                .usingRecursiveComparison()
+                .isEqualTo(new UserPreferences(oldPreferences));
+
+        UserPreferencesDTO newPreferences = new UserPreferencesDTO(
+                someUser.getUserName(),
+                500,
+                500,
+                1500,
+                7,
+                2,
+                2,
+                2
+        );
+
+
+        mockMvc.perform(put("/user/updatePreferences")
+                .accept(MediaType.ALL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonStream.serialize(newPreferences)))
+                .andExpect(status().isOk());
+
+        assertThat(someUser.getUserPreferences())
+                .usingRecursiveComparison()
+                .isEqualTo(new UserPreferences(newPreferences));
     }
 }
