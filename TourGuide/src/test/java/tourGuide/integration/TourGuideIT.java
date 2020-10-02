@@ -1,5 +1,8 @@
 package tourGuide.integration;
 
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
+import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,11 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -63,5 +71,34 @@ public class TourGuideIT {
 
         assertThat(tourGuideService.tracker.isStopped())
                 .isTrue();
+    }
+
+    @Test
+    public void allUsersLocation() throws Exception {
+        MvcResult result = mockMvc.perform(get("/admin/action/getAllUsersLocations"))
+                .andReturn();
+
+        String json = result.getResponse().getContentAsString();
+
+        Any usersLocations = JsonIterator.deserialize(json);
+
+        usersLocations.asMap().forEach((userId, location) -> {
+            Optional<User> user = tourGuideService.getAllUsers().stream()
+                    .filter(u -> u.getUserId().equals(UUID.fromString(userId)))
+                    .findFirst();
+
+            assertThat(user)
+                    .isNotEmpty();
+
+            Location userLastLocation = user.get().getLastVisitedLocation().location;
+
+            // Because double was used for longitude and latitude, rounding errors. Use of BigDecimal with specific scale to workaround the problem
+            assertThat(location.toBigDecimal("latitude").setScale(6, RoundingMode.HALF_UP).doubleValue())
+                    .isEqualTo(BigDecimal.valueOf(userLastLocation.latitude).setScale(6, RoundingMode.HALF_UP).doubleValue());
+            assertThat(location.toBigDecimal("longitude").setScale(6, RoundingMode.HALF_UP).doubleValue())
+                    .isEqualTo(BigDecimal.valueOf(userLastLocation.longitude).setScale(6, RoundingMode.HALF_UP).doubleValue());
+
+        });
+
     }
 }
