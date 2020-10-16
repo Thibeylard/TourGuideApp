@@ -30,6 +30,8 @@ repositories {
 }
 
 dependencies {
+    implementation project(':models')
+
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile group: 'org.javamoney', name: 'moneta', version: '1.3'

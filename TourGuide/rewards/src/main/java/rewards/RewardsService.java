@@ -1,12 +1,11 @@
 package rewards;
 
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
+import models.dto.AttractionDTO;
+import models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
-import tourGuide.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class RewardsService {
     private final int attractionProximityRange = 200;
     //	private final GpsUtil gpsUtil;
     private final RewardCentral rewardsCentral;
-    private final List<Attraction> attractions;
+    private final List<AttractionDTO> attractions;
 
     // Concurrency
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
@@ -51,7 +50,7 @@ public class RewardsService {
                             .filter(a -> nearAttraction(ul, a))
                             .forEach(a -> {
                                 if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
-                                    user.addUserReward(new tourGuide.user.UserReward(ul, a, getRewardPoints(a, user)));
+                                    user.addUserReward(new models.user.UserReward(ul, a, getRewardPoints(a, user)));
                                 }
                             });
                 })));

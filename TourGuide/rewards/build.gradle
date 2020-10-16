@@ -30,8 +30,7 @@ repositories {
 }
 
 dependencies {
-    //TODO Add dependency on core, and gpsUtil client jars
-    implementation project(path : ':gps-util', configuration: 'clientJars')
+    implementation project(':models')
 
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'

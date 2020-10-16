@@ -1,4 +1,4 @@
-package tourGuide.dto;
+package models.dto;
 
 import com.jsoniter.annotation.JsonProperty;
 

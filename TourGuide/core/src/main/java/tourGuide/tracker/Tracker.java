@@ -1,11 +1,11 @@
 package tourGuide.tracker;
 
 import gpsUtil.GpsUtil;
+import models.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;

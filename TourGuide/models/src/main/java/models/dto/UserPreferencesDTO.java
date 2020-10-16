@@ -1,7 +1,7 @@
-package tourGuide.dto;
+package models.dto;
 
 import com.jsoniter.annotation.JsonCreator;
-import tourGuide.user.UserPreferences;
+import models.user.UserPreferences;
 
 public class UserPreferencesDTO {
     private String username;
