@@ -1,8 +1,8 @@
 package tourGuide.unit;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
+import gps.GpsUtilService;
+import models.dto.AttractionDTO;
+import models.dto.VisitedLocationDTO;
 import models.user.User;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import rewards.RewardsService;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 
 import java.util.Date;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 public class TestPerformance {
 
     @Autowired
-    private GpsUtil gpsUtil;
+    private GpsUtilService gpsUtilService;
     @Autowired
     private RewardsService rewardsService;
 
@@ -59,7 +59,7 @@ public class TestPerformance {
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
         InternalTestHelper.setInternalUserNumber(100000);
         StopWatch stopWatch = new StopWatch();
-        TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
 
         List<User> allUsers = tourGuideService.getAllUsers();
 
@@ -97,12 +97,12 @@ public class TestPerformance {
         InternalTestHelper.setInternalUserNumber(100000);
         StopWatch stopWatch = new StopWatch();
 
-        TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
-        List<Attraction> attractions = gpsUtil.getAttractions();
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
+        List<AttractionDTO> attractions = gpsUtilService.getAttractions();
         List<User> allUsers = tourGuideService.getAllUsers();
 
         allUsers.forEach(u ->
-                u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attractions.get(0), new Date()))
+                u.addToVisitedLocations(new VisitedLocationDTO(u.getUserId(), attractions.get(0), new Date()))
         );
 
         stopWatch.start();
@@ -110,7 +110,6 @@ public class TestPerformance {
                 .map(rewardsService::calculateRewards)
                 .toArray(CompletableFuture[]::new);
         CompletableFuture.allOf(futures).join();
-        ;
         stopWatch.stop();
 
         System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds.");

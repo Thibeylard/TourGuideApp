@@ -1,5 +1,6 @@
 package tourGuide.service;
 
+import gps.GpsUtilService;
 import models.dto.*;
 import models.user.User;
 import models.user.UserPreferences;
@@ -9,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rewards.RewardsService;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
+import tripPricer.TripPricerService;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -21,15 +24,15 @@ import java.util.stream.IntStream;
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtil gpsUtil;
+	private final GpsUtilService gpsUtilService;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = new TripPricer();
+	private final TripPricerService tripPricer = new TripPricerService();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	@Autowired
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
-		this.gpsUtil = gpsUtil;
+	public TourGuideService(GpsUtilService gpsUtilService, RewardsService rewardsService) {
+		this.gpsUtilService = gpsUtilService;
 		this.rewardsService = rewardsService;
 
 		if (testMode) {
@@ -38,7 +41,7 @@ public class TourGuideService {
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
-		this.tracker = new Tracker(this, gpsUtil, rewardsService);
+		this.tracker = new Tracker(this, gpsUtilService, rewardsService);
 		addShutDownHook();
 	}
 
@@ -53,7 +56,7 @@ public class TourGuideService {
 			visitedLocation = user.getLastVisitedLocation();
 		} else {
 			// Very rare case of location initiation, which is why gpsUtil can be invoke directly
-			visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+			visitedLocation = gpsUtilService.getUserLocation(user.getUserId());
 			user.addToVisitedLocations(visitedLocation);
 		}
 		return visitedLocation;
@@ -111,7 +114,7 @@ public class TourGuideService {
 	}
 
 	public List<AttractionDTO> getNearByAttractions(VisitedLocationDTO visitedLocation) {
-		List<AttractionDTO> nearbyAttractions = gpsUtil.getAttractions();
+		List<AttractionDTO> nearbyAttractions = gpsUtilService.getAttractions();
 		nearbyAttractions = nearbyAttractions.stream()
 				.sorted(Comparator.comparing(
 						attraction -> rewardsService.getDistance(visitedLocation.location, attraction)))

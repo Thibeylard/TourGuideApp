@@ -1,10 +1,10 @@
 package tourGuide.tracker;
 
-import gpsUtil.GpsUtil;
+import gps.GpsUtilService;
 import models.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tourGuide.service.RewardsService;
+import rewards.RewardsService;
 import tourGuide.service.TourGuideService;
 
 import java.util.concurrent.CompletableFuture;
@@ -15,14 +15,14 @@ import java.util.concurrent.TimeUnit;
 public class Tracker extends Thread {
     private final Logger logger = LoggerFactory.getLogger(Tracker.class);
     private final TourGuideService tourGuideService;
-    private final GpsUtil gpsUtil;
+    private final GpsUtilService gpsUtil;
     private final RewardsService rewardsService;
     private final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
     // Concurrency
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean stop = true;
 
-    public Tracker(TourGuideService tourGuideService, GpsUtil gpsUtil, RewardsService rewardsService) {
+    public Tracker(TourGuideService tourGuideService, GpsUtilService gpsUtil, RewardsService rewardsService) {
         this.tourGuideService = tourGuideService;
         this.gpsUtil = gpsUtil;
         this.rewardsService = rewardsService;

@@ -18,7 +18,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 bootJar {
-    baseName = 'tourGuide-gpsUtil'
+    baseName = 'tourGuide-core'
     version =  '1.0.0'
 }
 
@@ -27,8 +27,10 @@ repositories {
 }
 
 dependencies {
-    //TODO Add dependency on rewards, tripPricer, and gpsUtil client jars
     implementation project(':models')
+    implementation project(':rewards')
+    implementation project(':gps-util')
+    implementation project(':trip-pricer')
 
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
@@ -39,9 +41,9 @@ dependencies {
     testCompile 'junit:junit'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
     testCompile 'org.assertj:assertj-core:3.17.2'
+    testCompile 'org.apache.commons:commons-lang3:3.11'
 
 }
-
 
 jacoco {
     toolVersion = "0.8.4"

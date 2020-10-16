@@ -1,7 +1,10 @@
 package rewards;
 
 
+import gps.GpsUtilService;
 import models.dto.AttractionDTO;
+import models.dto.LocationDTO;
+import models.dto.VisitedLocationDTO;
 import models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,6 @@ public class RewardsService {
     // proximity in miles
     private final int defaultProximityBuffer = 10;
     private final int attractionProximityRange = 200;
-    //	private final GpsUtil gpsUtil;
     private final RewardCentral rewardsCentral;
     private final List<AttractionDTO> attractions;
 
@@ -29,9 +31,9 @@ public class RewardsService {
     private int proximityBuffer = defaultProximityBuffer;
 
     @Autowired
-    public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
+    public RewardsService(GpsUtilService gpsUtil) {
         attractions = gpsUtil.getAttractions();
-        this.rewardsCentral = rewardCentral;
+        this.rewardsCentral = new RewardCentral();
     }
 
     public void setProximityBuffer(int proximityBuffer) {
@@ -58,19 +60,19 @@ public class RewardsService {
         return CompletableFuture.allOf(futures.stream().toArray(CompletableFuture[]::new));
     }
 
-    public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
+    public boolean isWithinAttractionProximity(AttractionDTO attraction, LocationDTO location) {
         return !(getDistance(attraction, location) > attractionProximityRange);
     }
 
-    private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
+    private boolean nearAttraction(VisitedLocationDTO visitedLocation, AttractionDTO attraction) {
         return !(getDistance(attraction, visitedLocation.location) > proximityBuffer);
     }
 
-    public int getRewardPoints(Attraction attraction, User user) {
+    public int getRewardPoints(AttractionDTO attraction, User user) {
         return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
     }
 
-    public double getDistance(Location loc1, Location loc2) {
+    public double getDistance(LocationDTO loc1, LocationDTO loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);
         double lat2 = Math.toRadians(loc2.latitude);
