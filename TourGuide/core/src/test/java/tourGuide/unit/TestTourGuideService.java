@@ -171,17 +171,17 @@ public class TestTourGuideService {
         TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
 
         User user = tourGuideService.getAllUsers().get(0);
-        UserAttractionRecommendation userAttractionRecommendation =
+        AttractionRecommendationDTO attractionRecommendationDTO =
                 tourGuideService.getUserAttractionRecommendation(user.getUserName());
 
-        String generatedJson = JsonStream.serialize(userAttractionRecommendation);
+        String generatedJson = JsonStream.serialize(attractionRecommendationDTO);
 
         System.out.println(generatedJson);
 
-        assertThat(userAttractionRecommendation.getUserPosition())
+        assertThat(attractionRecommendationDTO.getUserPosition())
                 .isEqualTo(user.getLastVisitedLocation().location);
 
-        assertThat(userAttractionRecommendation.getNearbyAttractions())
+        assertThat(attractionRecommendationDTO.getNearbyAttractions())
                 .hasSize(5);
 
     }

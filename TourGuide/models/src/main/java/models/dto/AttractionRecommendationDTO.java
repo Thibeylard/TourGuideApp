@@ -5,13 +5,13 @@ import com.jsoniter.annotation.JsonProperty;
 
 import java.util.Map;
 
-public class UserAttractionRecommendation {
+public class AttractionRecommendationDTO {
     @JsonProperty("userPosition")
     LocationDTO userPosition;
     @JsonProperty("nearbyAttractions")
-    Map<String, NearbyAttraction> nearbyAttractions;
+    Map<String, NearbyAttractionDTO> nearbyAttractions;
 
-    public UserAttractionRecommendation(LocationDTO userPosition, Map<String, NearbyAttraction> nearbyAttractions) {
+    public AttractionRecommendationDTO(LocationDTO userPosition, Map<String, NearbyAttractionDTO> nearbyAttractions) {
         this.userPosition = userPosition;
         this.nearbyAttractions = nearbyAttractions;
     }
@@ -20,7 +20,7 @@ public class UserAttractionRecommendation {
         return userPosition;
     }
 
-    public Map<String, NearbyAttraction> getNearbyAttractions() {
+    public Map<String, NearbyAttractionDTO> getNearbyAttractions() {
         return nearbyAttractions;
     }
 }

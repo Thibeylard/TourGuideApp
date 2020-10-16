@@ -97,20 +97,20 @@ public class TourGuideService {
 		return providers;
 	}
 
-	public UserAttractionRecommendation getUserAttractionRecommendation(String username) {
+	public AttractionRecommendationDTO getUserAttractionRecommendation(String username) {
 		VisitedLocationDTO userLastLocation = getUser(username).getLastVisitedLocation();
 		List<AttractionDTO> nearbyAttractions = getNearByAttractions(userLastLocation);
-		Map<String, NearbyAttraction> nearbyAttractionHashMap = new HashMap<>();
+		Map<String, NearbyAttractionDTO> nearbyAttractionHashMap = new HashMap<>();
 		nearbyAttractions.forEach(att ->
 				nearbyAttractionHashMap.put(
 						att.attractionName,
-						new NearbyAttraction(
+						new NearbyAttractionDTO(
 								att.latitude,
 								att.longitude,
 								rewardsService.getDistance(att, userLastLocation.location),
 								rewardsService.getRewardPoints(att, getUser(username))))
 		);
-		return new UserAttractionRecommendation(userLastLocation.location, nearbyAttractionHashMap);
+		return new AttractionRecommendationDTO(userLastLocation.location, nearbyAttractionHashMap);
 	}
 
 	public List<AttractionDTO> getNearByAttractions(VisitedLocationDTO visitedLocation) {

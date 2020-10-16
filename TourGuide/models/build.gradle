@@ -1,9 +1,4 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-
-repositories {
-    mavenCentral()
-}
+// :models build.gradle
 
 dependencies {
     compile group: 'org.javamoney', name: 'moneta', version: '1.3'

@@ -6,8 +6,6 @@ import models.dto.AttractionDTO;
 import models.dto.LocationDTO;
 import models.dto.VisitedLocationDTO;
 import models.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
 
 import java.util.ArrayList;
@@ -16,7 +14,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Service
 public class RewardsService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
@@ -30,7 +27,6 @@ public class RewardsService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
     private int proximityBuffer = defaultProximityBuffer;
 
-    @Autowired
     public RewardsService(GpsUtilService gpsUtil) {
         attractions = gpsUtil.getAttractions();
         this.rewardsCentral = new RewardCentral();

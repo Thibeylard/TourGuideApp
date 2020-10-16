@@ -2,7 +2,7 @@ package models.dto;
 
 import com.jsoniter.annotation.JsonProperty;
 
-public class NearbyAttraction {
+public class NearbyAttractionDTO {
     @JsonProperty("latitude")
     double latitude;
     @JsonProperty("longitude")
@@ -12,7 +12,7 @@ public class NearbyAttraction {
     @JsonProperty("rewardPoints")
     int rewardPoints;
 
-    public NearbyAttraction(double latitude, double longitude, double distance, int rewardPoints) {
+    public NearbyAttractionDTO(double latitude, double longitude, double distance, int rewardPoints) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.distance = distance;
