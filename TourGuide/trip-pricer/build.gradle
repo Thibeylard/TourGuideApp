@@ -1,5 +1,10 @@
 // :trip-pricer build.gradle
 
+bootJar {
+    baseName = 'tourGuide-tripPricer'
+    version =  '1.0.0'
+}
+
 dependencies {
     implementation project(':models')
     implementation fileTree(dir: 'src/main/resources/libs', include: 'TripPricer.jar')

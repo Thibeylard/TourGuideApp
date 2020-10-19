@@ -1,10 +1,75 @@
 // common build.gradle
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+    }
+}
 
-subprojects {
+def springApps = subprojects.findAll() { project -> project.name != "models" }
+
+configure(springApps) {
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+        }
+    }
+
     apply plugin: 'java'
     apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: "jacoco"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     repositories {
         mavenCentral()
     }
+
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-web'
+        compile 'org.springframework.boot:spring-boot-starter-actuator'
+
+        testCompile 'junit:junit'
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.6.RELEASE'
+        testCompile 'org.assertj:assertj-core:3.17.2'
+        testCompile 'org.apache.commons:commons-lang3:3.11'
+
+    }
+
+    jacoco {
+        toolVersion = "0.8.4"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination file("${buildDir}/jacocoHtml")
+        }
+    }
+
+    test.finalizedBy jacocoTestReport
+    check.dependsOn jacocoTestCoverageVerification
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                limit {
+                    counter = 'LINE'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.5
+                }
+            }
+        }
+    }
+
 }

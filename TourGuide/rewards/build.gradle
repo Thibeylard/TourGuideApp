@@ -1,5 +1,10 @@
 // :rewards build.gradle
 
+bootJar {
+    baseName = 'tourGuide-rewards'
+    version =  '1.0.0'
+}
+
 dependencies {
     implementation project(':models')
     implementation project(':gps-util')

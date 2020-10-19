@@ -1,5 +1,10 @@
 // :gps-util build.gradle
 
+bootJar {
+    baseName = 'tourGuide-gpsUtil'
+    version =  '1.0.0'
+}
+
 dependencies {
     implementation project(':models')
     implementation fileTree(dir: 'src/main/resources/libs', include: 'gpsUtil.jar')
