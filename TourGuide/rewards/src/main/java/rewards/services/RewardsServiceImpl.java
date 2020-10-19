@@ -1,7 +1,7 @@
-package rewards;
+package rewards.services;
 
 
-import gps.GpsUtilServiceImpl;
+import gps.GpsUtilService;
 import models.dto.AttractionDTO;
 import models.dto.LocationDTO;
 import models.dto.VisitedLocationDTO;
@@ -27,7 +27,7 @@ public class RewardsServiceImpl implements RewardsService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
     private int proximityBuffer = defaultProximityBuffer;
 
-    public RewardsServiceImpl(GpsUtilServiceImpl gpsUtil) {
+    public RewardsServiceImpl(GpsUtilService gpsUtil) {
         attractions = gpsUtil.getAttractions();
         this.rewardsCentral = new RewardCentral();
     }

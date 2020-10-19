@@ -3,7 +3,7 @@ package tourGuide;
 import gps.GpsUtilServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import rewards.RewardsServiceImpl;
+import rewards.services.RewardsServiceImpl;
 
 import java.util.Locale;
 

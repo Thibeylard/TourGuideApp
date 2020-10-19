@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rewards.RewardsServiceImpl;
+import rewards.services.RewardsServiceImpl;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tripPricer.TripPricerServiceImpl;
