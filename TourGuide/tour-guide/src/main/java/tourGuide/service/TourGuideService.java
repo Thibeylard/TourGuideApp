@@ -1,6 +1,6 @@
 package tourGuide.service;
 
-import gps.GpsUtilServiceImpl;
+import gps.services.GpsUtilServiceImpl;
 import models.dto.*;
 import models.user.User;
 import models.user.UserPreferences;

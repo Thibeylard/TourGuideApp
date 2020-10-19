@@ -1,6 +1,6 @@
 package rewards.config;
 
-import gps.GpsUtilService;
+import gps.services.GpsUtilService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rewards.services.GpsUtilServiceHttpImpl;

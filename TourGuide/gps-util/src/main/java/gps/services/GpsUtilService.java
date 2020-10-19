@@ -1,4 +1,4 @@
-package gps;
+package gps.services;
 
 import models.dto.AttractionDTO;
 import models.dto.VisitedLocationDTO;

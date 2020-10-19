@@ -1,7 +1,7 @@
 package tourGuide.unit;
 
 import com.jsoniter.output.JsonStream;
-import gps.GpsUtilServiceImpl;
+import gps.services.GpsUtilServiceImpl;
 import models.dto.*;
 import models.user.User;
 import org.junit.Test;

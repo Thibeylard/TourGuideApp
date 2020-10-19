@@ -1,6 +1,6 @@
 package rewards.services;
 
-import gps.GpsUtilService;
+import gps.services.GpsUtilService;
 import models.dto.AttractionDTO;
 import models.dto.VisitedLocationDTO;
 
