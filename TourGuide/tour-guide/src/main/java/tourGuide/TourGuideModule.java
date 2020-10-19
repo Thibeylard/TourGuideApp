@@ -1,24 +1,24 @@
 package tourGuide;
 
-import gps.GpsUtilService;
+import gps.GpsUtilServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import rewards.RewardsService;
+import rewards.RewardsServiceImpl;
 
 import java.util.Locale;
 
 @Configuration
 public class TourGuideModule {
 
-    @Bean
-    public GpsUtilService getGpsUtilService() {
-        return new GpsUtilService();
-    }
+	@Bean
+	public GpsUtilServiceImpl getGpsUtilService() {
+		return new GpsUtilServiceImpl();
+	}
 
 	@Bean
-	public RewardsService getRewardsService() {
-        return new RewardsService(getGpsUtilService());
-    }
+	public RewardsServiceImpl getRewardsService() {
+		return new RewardsServiceImpl(getGpsUtilService());
+	}
 
 	@Bean
 	public Locale getLocale() {

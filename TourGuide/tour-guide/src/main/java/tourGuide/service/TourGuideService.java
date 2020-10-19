@@ -1,6 +1,6 @@
 package tourGuide.service;
 
-import gps.GpsUtilService;
+import gps.GpsUtilServiceImpl;
 import models.dto.*;
 import models.user.User;
 import models.user.UserPreferences;
@@ -10,10 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rewards.RewardsService;
+import rewards.RewardsServiceImpl;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
-import tripPricer.TripPricerService;
+import tripPricer.TripPricerServiceImpl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -24,16 +24,16 @@ import java.util.stream.IntStream;
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtilService gpsUtilService;
-	private final RewardsService rewardsService;
-	private final TripPricerService tripPricer = new TripPricerService();
+	private final GpsUtilServiceImpl gpsUtilServiceImpl;
+	private final RewardsServiceImpl rewardsServiceImpl;
+	private final TripPricerServiceImpl tripPricer = new TripPricerServiceImpl();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	@Autowired
-	public TourGuideService(GpsUtilService gpsUtilService, RewardsService rewardsService) {
-		this.gpsUtilService = gpsUtilService;
-		this.rewardsService = rewardsService;
+	public TourGuideService(GpsUtilServiceImpl gpsUtilServiceImpl, RewardsServiceImpl rewardsServiceImpl) {
+		this.gpsUtilServiceImpl = gpsUtilServiceImpl;
+		this.rewardsServiceImpl = rewardsServiceImpl;
 
 		if (testMode) {
 			logger.info("TestMode enabled");
@@ -41,7 +41,7 @@ public class TourGuideService {
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
-		this.tracker = new Tracker(this, gpsUtilService, rewardsService);
+		this.tracker = new Tracker(this, gpsUtilServiceImpl, rewardsServiceImpl);
 		addShutDownHook();
 	}
 
@@ -56,7 +56,7 @@ public class TourGuideService {
 			visitedLocation = user.getLastVisitedLocation();
 		} else {
 			// Very rare case of location initiation, which is why gpsUtil can be invoke directly
-			visitedLocation = gpsUtilService.getUserLocation(user.getUserId());
+			visitedLocation = gpsUtilServiceImpl.getUserLocation(user.getUserId());
 			user.addToVisitedLocations(visitedLocation);
 		}
 		return visitedLocation;
@@ -107,17 +107,17 @@ public class TourGuideService {
 						new NearbyAttractionDTO(
 								att.latitude,
 								att.longitude,
-								rewardsService.getDistance(att, userLastLocation.location),
-								rewardsService.getRewardPoints(att, getUser(username))))
+								rewardsServiceImpl.getDistance(att, userLastLocation.location),
+								rewardsServiceImpl.getRewardPoints(att, getUser(username))))
 		);
 		return new AttractionRecommendationDTO(userLastLocation.location, nearbyAttractionHashMap);
 	}
 
 	public List<AttractionDTO> getNearByAttractions(VisitedLocationDTO visitedLocation) {
-		List<AttractionDTO> nearbyAttractions = gpsUtilService.getAttractions();
+		List<AttractionDTO> nearbyAttractions = gpsUtilServiceImpl.getAttractions();
 		nearbyAttractions = nearbyAttractions.stream()
 				.sorted(Comparator.comparing(
-						attraction -> rewardsService.getDistance(visitedLocation.location, attraction)))
+						attraction -> rewardsServiceImpl.getDistance(visitedLocation.location, attraction)))
 				.limit(5)
 				.collect(Collectors.toList());
 

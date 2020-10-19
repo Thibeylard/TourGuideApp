@@ -1,10 +1,10 @@
 package tourGuide.tracker;
 
-import gps.GpsUtilService;
+import gps.GpsUtilServiceImpl;
 import models.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rewards.RewardsService;
+import rewards.RewardsServiceImpl;
 import tourGuide.service.TourGuideService;
 
 import java.util.concurrent.CompletableFuture;
@@ -15,17 +15,17 @@ import java.util.concurrent.TimeUnit;
 public class Tracker extends Thread {
     private final Logger logger = LoggerFactory.getLogger(Tracker.class);
     private final TourGuideService tourGuideService;
-    private final GpsUtilService gpsUtil;
-    private final RewardsService rewardsService;
+    private final GpsUtilServiceImpl gpsUtil;
+    private final RewardsServiceImpl rewardsServiceImpl;
     private final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
     // Concurrency
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean stop = true;
 
-    public Tracker(TourGuideService tourGuideService, GpsUtilService gpsUtil, RewardsService rewardsService) {
+    public Tracker(TourGuideService tourGuideService, GpsUtilServiceImpl gpsUtil, RewardsServiceImpl rewardsServiceImpl) {
         this.tourGuideService = tourGuideService;
         this.gpsUtil = gpsUtil;
-        this.rewardsService = rewardsService;
+        this.rewardsServiceImpl = rewardsServiceImpl;
     }
 
     public void startTracking() {
@@ -69,7 +69,7 @@ public class Tracker extends Thread {
     public CompletableFuture<?> trackUserLocation(User user) {
         return CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(user.getUserId()))
                 .thenAccept(user::addToVisitedLocations)
-                .thenRunAsync(() -> rewardsService.calculateRewards(user));
+                .thenRunAsync(() -> rewardsServiceImpl.calculateRewards(user));
     }
 
     public boolean isStopped() {
