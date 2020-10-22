@@ -6,6 +6,7 @@ import models.dto.AttractionDTO;
 import models.dto.LocationDTO;
 import models.dto.VisitedLocationDTO;
 import models.user.User;
+import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Service
 public class RewardsServiceImpl implements RewardsService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 

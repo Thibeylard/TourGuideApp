@@ -1,11 +1,15 @@
-package tripPricer;
+package tripPricer.services;
 
 import models.dto.ProviderDTO;
+import org.springframework.stereotype.Service;
+import tripPricer.Provider;
+import tripPricer.TripPricer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class TripPricerServiceImpl implements TripPricerService {
     private final TripPricer tripPricer;
 

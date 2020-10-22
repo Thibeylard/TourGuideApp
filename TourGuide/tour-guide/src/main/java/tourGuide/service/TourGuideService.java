@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import rewards.services.RewardsServiceImpl;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
-import tripPricer.TripPricerServiceImpl;
+import tripPricer.services.TripPricerServiceImpl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

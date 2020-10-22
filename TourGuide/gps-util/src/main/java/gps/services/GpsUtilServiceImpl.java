@@ -6,11 +6,13 @@ import gpsUtil.location.VisitedLocation;
 import models.dto.AttractionDTO;
 import models.dto.LocationDTO;
 import models.dto.VisitedLocationDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class GpsUtilServiceImpl implements GpsUtilService {
     private final GpsUtil gpsUtil;
 
