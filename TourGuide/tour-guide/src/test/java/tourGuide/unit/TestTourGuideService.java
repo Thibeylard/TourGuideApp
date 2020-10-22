@@ -1,9 +1,13 @@
 package tourGuide.unit;
 
 import com.jsoniter.output.JsonStream;
+import common.dtos.AttractionRecommendationDTO;
+import common.models.localization.Attraction;
+import common.models.localization.Location;
+import common.models.localization.VisitedLocation;
+import common.models.marketing.Provider;
+import common.models.user.User;
 import gps.services.GpsUtilServiceImpl;
-import models.dto.*;
-import models.user.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +46,7 @@ public class TestTourGuideService {
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsServiceImpl);
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-        VisitedLocationDTO visitedLocation = tourGuideService.getUserLocation(user);
+        VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
         assertEquals(visitedLocation.userId, user.getUserId());
         ;
     }
@@ -107,7 +111,7 @@ public class TestTourGuideService {
         InternalTestHelper.setInternalUserNumber(100);
         TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
 
-        LinkedHashMap<String, LocationDTO> allUsersLastLocation = new LinkedHashMap<>(tourGuideService.getAllUsersLastLocation());
+        LinkedHashMap<String, Location> allUsersLastLocation = new LinkedHashMap<>(tourGuideService.getAllUsersLastLocation());
         String generatedJson = JsonStream.serialize(allUsersLastLocation);
 
         System.out.println(generatedJson);
@@ -138,13 +142,13 @@ public class TestTourGuideService {
         TourGuideService tourGuideService = new TourGuideService(gpsUtilSpy, rewardsServiceImplSpy);
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-        VisitedLocationDTO visitedLocation = tourGuideService.getUserLocation(user);
+        VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
 
-        List<AttractionDTO> mockAttractions = new ArrayList<>();
-        List<AttractionDTO> closestAttractions = new ArrayList<>();
-        AttractionDTO mockAttraction;
+        List<Attraction> mockAttractions = new ArrayList<>();
+        List<Attraction> closestAttractions = new ArrayList<>();
+        Attraction mockAttraction;
         for (int i = 10; i > 0; i--) {
-            mockAttraction = mock(AttractionDTO.class);
+            mockAttraction = mock(Attraction.class);
             doReturn((double) i).when(rewardsServiceImplSpy).getDistance(mockAttraction, visitedLocation.location);
             doReturn((double) i).when(rewardsServiceImplSpy).getDistance(visitedLocation.location, mockAttraction);
             mockAttractions.add(mockAttraction);
@@ -156,7 +160,7 @@ public class TestTourGuideService {
 
         when(gpsUtilSpy.getAttractions()).thenReturn(mockAttractions);
 
-        List<AttractionDTO> attractions = tourGuideService.getNearByAttractions(visitedLocation);
+        List<Attraction> attractions = tourGuideService.getNearByAttractions(visitedLocation);
 
         assertThat(attractions)
                 .hasSize(5)
@@ -195,8 +199,8 @@ public class TestTourGuideService {
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 
-        List<ProviderDTO> providers = tourGuideService.getTripDeals(user);
-        for (ProviderDTO provider :
+        List<Provider> providers = tourGuideService.getTripDeals(user);
+        for (Provider provider :
                 providers) {
             System.out.println("--------------- TRIP -------------");
             System.out.println("Name :" + provider.name);

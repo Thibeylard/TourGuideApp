@@ -1,6 +1,6 @@
 package tripPricer.controllers;
 
-import models.dto.ProviderDTO;
+import common.models.marketing.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ public class TripPricerController {
     }
 
     @GetMapping("tripPricer/getPrice")
-    public List<ProviderDTO> getPrice(String apiKey, UUID attractionId, int adults, int children, int nightsStay, int rewardsPoints) {
+    public List<Provider> getPrice(String apiKey, UUID attractionId, int adults, int children, int nightsStay, int rewardsPoints) {
         return tripPricerService.getPrice(apiKey, attractionId, adults, children, nightsStay, rewardsPoints);
     }
 

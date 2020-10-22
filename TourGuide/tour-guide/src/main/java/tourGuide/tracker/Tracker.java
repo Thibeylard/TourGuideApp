@@ -1,7 +1,7 @@
 package tourGuide.tracker;
 
+import common.models.user.User;
 import gps.services.GpsUtilServiceImpl;
-import models.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rewards.services.RewardsServiceImpl;

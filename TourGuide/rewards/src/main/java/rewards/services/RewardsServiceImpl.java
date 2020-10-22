@@ -1,11 +1,11 @@
 package rewards.services;
 
 
+import common.models.localization.Attraction;
+import common.models.localization.Location;
+import common.models.localization.VisitedLocation;
+import common.models.user.User;
 import gps.services.GpsUtilService;
-import models.dto.AttractionDTO;
-import models.dto.LocationDTO;
-import models.dto.VisitedLocationDTO;
-import models.user.User;
 import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
 
@@ -23,7 +23,7 @@ public class RewardsServiceImpl implements RewardsService {
     private final int defaultProximityBuffer = 10;
     private final int attractionProximityRange = 200;
     private final RewardCentral rewardsCentral;
-    private final List<AttractionDTO> attractions;
+    private final List<Attraction> attractions;
 
     // Concurrency
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
@@ -50,7 +50,7 @@ public class RewardsServiceImpl implements RewardsService {
                             .filter(a -> nearAttraction(ul, a))
                             .forEach(a -> {
                                 if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
-                                    user.addUserReward(new models.user.UserReward(ul, a, getRewardPoints(a, user)));
+                                    user.addUserReward(new common.models.user.UserReward(ul, a, getRewardPoints(a, user)));
                                 }
                             });
                 })));
@@ -58,19 +58,19 @@ public class RewardsServiceImpl implements RewardsService {
         return CompletableFuture.allOf(futures.stream().toArray(CompletableFuture[]::new));
     }
 
-    public boolean isWithinAttractionProximity(AttractionDTO attraction, LocationDTO location) {
+    public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
         return !(getDistance(attraction, location) > attractionProximityRange);
     }
 
-    private boolean nearAttraction(VisitedLocationDTO visitedLocation, AttractionDTO attraction) {
+    private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
         return !(getDistance(attraction, visitedLocation.location) > proximityBuffer);
     }
 
-    public int getRewardPoints(AttractionDTO attraction, User user) {
+    public int getRewardPoints(Attraction attraction, User user) {
         return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
     }
 
-    public double getDistance(LocationDTO loc1, LocationDTO loc2) {
+    public double getDistance(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);
         double lat2 = Math.toRadians(loc2.latitude);
@@ -83,7 +83,11 @@ public class RewardsServiceImpl implements RewardsService {
         return STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
     }
 
-    public List<AttractionDTO> getAttractions() {
-        return attractions;
+    public int getDefaultProximityBuffer() {
+        return defaultProximityBuffer;
+    }
+
+    public int getProximityBuffer() {
+        return proximityBuffer;
     }
 }

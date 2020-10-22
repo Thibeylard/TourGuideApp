@@ -1,6 +1,5 @@
-trip-pricer/build
-core/build
-gps-util/build
-rewards/build
-models/build
+/trip-pricer/build
 /tour-guide/build/
+/common/build/
+/rewards/build/
+/gps/build/

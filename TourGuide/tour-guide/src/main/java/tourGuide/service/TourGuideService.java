@@ -1,10 +1,16 @@
 package tourGuide.service;
 
+import common.dtos.AttractionRecommendationDTO;
+import common.dtos.NearbyAttractionDTO;
+import common.dtos.UserPreferencesDTO;
+import common.models.localization.Attraction;
+import common.models.localization.Location;
+import common.models.localization.VisitedLocation;
+import common.models.marketing.Provider;
+import common.models.user.User;
+import common.models.user.UserPreferences;
+import common.models.user.UserReward;
 import gps.services.GpsUtilServiceImpl;
-import models.dto.*;
-import models.user.User;
-import models.user.UserPreferences;
-import models.user.UserReward;
 import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +55,8 @@ public class TourGuideService {
 		return user.getUserRewards();
 	}
 
-	public VisitedLocationDTO getUserLocation(User user) {
-		VisitedLocationDTO visitedLocation;
+	public VisitedLocation getUserLocation(User user) {
+		VisitedLocation visitedLocation;
 
 		if (user.getVisitedLocations().size() > 0) {
 			visitedLocation = user.getLastVisitedLocation();
@@ -70,8 +76,8 @@ public class TourGuideService {
 		return new ArrayList<>(internalUserMap.values());
 	}
 
-	public HashMap<String, LocationDTO> getAllUsersLastLocation() {
-		HashMap<String, LocationDTO> usersLastLocation = new HashMap<>();
+	public HashMap<String, Location> getAllUsersLastLocation() {
+		HashMap<String, Location> usersLastLocation = new HashMap<>();
 		getAllUsers()
 				.forEach(u -> usersLastLocation.put(u.getLastVisitedLocation().userId.toString(), u.getLastVisitedLocation().location));
 		return usersLastLocation;
@@ -83,10 +89,10 @@ public class TourGuideService {
 		}
 	}
 
-	public List<ProviderDTO> getTripDeals(User user) {
+	public List<Provider> getTripDeals(User user) {
 		int cumulativeRewardPoints = user.getUserRewards()
 				.stream().mapToInt(UserReward::getRewardPoints).sum();
-		List<ProviderDTO> providers = tripPricer.getPrice(
+		List<Provider> providers = tripPricer.getPrice(
 				tripPricerApiKey,
 				user.getUserId(),
 				user.getUserPreferences().getNumberOfAdults(),
@@ -98,8 +104,8 @@ public class TourGuideService {
 	}
 
 	public AttractionRecommendationDTO getUserAttractionRecommendation(String username) {
-		VisitedLocationDTO userLastLocation = getUser(username).getLastVisitedLocation();
-		List<AttractionDTO> nearbyAttractions = getNearByAttractions(userLastLocation);
+		VisitedLocation userLastLocation = getUser(username).getLastVisitedLocation();
+		List<Attraction> nearbyAttractions = getNearByAttractions(userLastLocation);
 		Map<String, NearbyAttractionDTO> nearbyAttractionHashMap = new HashMap<>();
 		nearbyAttractions.forEach(att ->
 				nearbyAttractionHashMap.put(
@@ -113,8 +119,8 @@ public class TourGuideService {
 		return new AttractionRecommendationDTO(userLastLocation.location, nearbyAttractionHashMap);
 	}
 
-	public List<AttractionDTO> getNearByAttractions(VisitedLocationDTO visitedLocation) {
-		List<AttractionDTO> nearbyAttractions = gpsUtilServiceImpl.getAttractions();
+	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+		List<Attraction> nearbyAttractions = gpsUtilServiceImpl.getAttractions();
 		nearbyAttractions = nearbyAttractions.stream()
 				.sorted(Comparator.comparing(
 						attraction -> rewardsServiceImpl.getDistance(visitedLocation.location, attraction)))
@@ -176,7 +182,7 @@ public class TourGuideService {
 
 	private void generateUserLocationHistory(User user) {
 		IntStream.range(0, 3).forEach(i -> {
-			user.addToVisitedLocations(new VisitedLocationDTO(user.getUserId(), new LocationDTO(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
+			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
 		});
 	}
 

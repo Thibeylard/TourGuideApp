@@ -3,11 +3,11 @@ package tourGuide.integration;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
-import models.dto.LocationDTO;
-import models.dto.UserPreferencesDTO;
-import models.dto.VisitedLocationDTO;
-import models.user.User;
-import models.user.UserPreferences;
+import common.dtos.UserPreferencesDTO;
+import common.models.localization.Location;
+import common.models.localization.VisitedLocation;
+import common.models.user.User;
+import common.models.user.UserPreferences;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +55,7 @@ public class TourGuideIT {
                 .isTrue();
 
         User someUser = tourGuideService.getAllUsers().get(0);
-        VisitedLocationDTO previousLocation = someUser.getLastVisitedLocation();
+        VisitedLocation previousLocation = someUser.getLastVisitedLocation();
 
         TimeUnit.SECONDS.sleep(1);
 
@@ -96,7 +96,7 @@ public class TourGuideIT {
             assertThat(user)
                     .isNotEmpty();
 
-            LocationDTO userLastLocation = user.get().getLastVisitedLocation().location;
+            Location userLastLocation = user.get().getLastVisitedLocation().location;
 
             // Because double was used for longitude and latitude, rounding errors. Use of BigDecimal with specific scale to workaround the problem
             assertThat(location.toBigDecimal("latitude").setScale(6, RoundingMode.HALF_UP).doubleValue())

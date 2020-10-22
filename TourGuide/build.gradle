@@ -8,7 +8,7 @@ buildscript {
     }
 }
 
-def springApps = subprojects.findAll() { project -> project.name != "models" }
+def springApps = subprojects.findAll() { project -> project.name != "common" }
 
 configure(springApps) {
 
@@ -58,18 +58,5 @@ configure(springApps) {
     }
 
     test.finalizedBy jacocoTestReport
-    check.dependsOn jacocoTestCoverageVerification
-
-    jacocoTestCoverageVerification {
-        violationRules {
-            rule {
-                limit {
-                    counter = 'LINE'
-                    value = 'COVEREDRATIO'
-                    minimum = 0.5
-                }
-            }
-        }
-    }
 
 }

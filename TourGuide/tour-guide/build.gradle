@@ -6,9 +6,22 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':models')
+    implementation project(':common')
     implementation project(':rewards')
-    implementation project(':gps-util')
+    implementation project(':gps')
     implementation project(':trip-pricer')
 }
 
+check.dependsOn jacocoTestCoverageVerification
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.5
+            }
+        }
+    }
+}

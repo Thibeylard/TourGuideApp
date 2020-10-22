@@ -1,10 +1,10 @@
 package tourGuide;
 
 import com.jsoniter.output.JsonStream;
-import models.dto.ProviderDTO;
-import models.dto.UserPreferencesDTO;
-import models.dto.VisitedLocationDTO;
-import models.user.User;
+import common.dtos.UserPreferencesDTO;
+import common.models.localization.VisitedLocation;
+import common.models.marketing.Provider;
+import common.models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tourGuide.service.TourGuideService;
@@ -46,7 +46,7 @@ public class TourGuideController {
 
     @RequestMapping("/user/getLocation")
     public String getLocation(@RequestParam String userName) {
-        VisitedLocationDTO visitedLocation = tourGuideService.getUserLocation(getUser(userName));
+        VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
         return JsonStream.serialize(visitedLocation.location);
     }
 
@@ -62,7 +62,7 @@ public class TourGuideController {
 
     @RequestMapping("/user/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
-        List<ProviderDTO> providers = tourGuideService.getTripDeals(getUser(userName));
+        List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
         return JsonStream.serialize(providers);
     }
 

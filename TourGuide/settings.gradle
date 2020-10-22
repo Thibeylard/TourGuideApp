@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'TourGuide'
-include 'rewards', 'gps-util', 'tour-guide', 'trip-pricer', 'models'
+include 'rewards', 'gps', 'tour-guide', 'trip-pricer', 'common'

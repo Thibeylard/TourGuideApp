@@ -6,8 +6,8 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':models')
-    implementation project(':gps-util')
+    implementation project(':common')
+    implementation project(':gps')
     implementation fileTree(dir: 'src/main/resources/libs', include: 'RewardCentral.jar')
 }
 

@@ -1,9 +1,9 @@
 package tourGuide.unit;
 
+import common.models.localization.Attraction;
+import common.models.localization.VisitedLocation;
+import common.models.user.User;
 import gps.services.GpsUtilServiceImpl;
-import models.dto.AttractionDTO;
-import models.dto.VisitedLocationDTO;
-import models.user.User;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,11 +98,11 @@ public class TestPerformance {
         StopWatch stopWatch = new StopWatch();
 
         TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
-        List<AttractionDTO> attractions = gpsUtilServiceImpl.getAttractions();
+        List<Attraction> attractions = gpsUtilServiceImpl.getAttractions();
         List<User> allUsers = tourGuideService.getAllUsers();
 
         allUsers.forEach(u ->
-                u.addToVisitedLocations(new VisitedLocationDTO(u.getUserId(), attractions.get(0), new Date()))
+                u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attractions.get(0), new Date()))
         );
 
         stopWatch.start();

@@ -1,10 +1,9 @@
 package rewards.services;
 
-import models.dto.AttractionDTO;
-import models.dto.LocationDTO;
-import models.user.User;
+import common.models.localization.Attraction;
+import common.models.localization.Location;
+import common.models.user.User;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface RewardsService {
@@ -15,11 +14,9 @@ public interface RewardsService {
 
     CompletableFuture<?> calculateRewards(User user);
 
-    boolean isWithinAttractionProximity(AttractionDTO attraction, LocationDTO location);
+    boolean isWithinAttractionProximity(Attraction attraction, Location location);
 
-    int getRewardPoints(AttractionDTO attraction, User user);
+    int getRewardPoints(Attraction attraction, User user);
 
-    double getDistance(LocationDTO loc1, LocationDTO loc2);
-
-    public List<AttractionDTO> getAttractions();
+    double getDistance(Location loc1, Location loc2);
 }

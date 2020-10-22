@@ -1,8 +1,7 @@
 package tripPricer.services;
 
-import models.dto.ProviderDTO;
+import common.models.marketing.Provider;
 import org.springframework.stereotype.Service;
-import tripPricer.Provider;
 import tripPricer.TripPricer;
 
 import java.util.ArrayList;
@@ -17,12 +16,12 @@ public class TripPricerServiceImpl implements TripPricerService {
         this.tripPricer = new TripPricer();
     }
 
-    public List<ProviderDTO> getPrice(String apiKey, UUID attractionId, int adults, int children, int nightsStay, int rewardsPoints) {
-        List<Provider> providers = tripPricer.getPrice(apiKey, attractionId, adults, children, nightsStay, rewardsPoints);
-        List<ProviderDTO> providerDTOS = new ArrayList<>();
+    public List<Provider> getPrice(String apiKey, UUID attractionId, int adults, int children, int nightsStay, int rewardsPoints) {
+        List<tripPricer.Provider> providers = tripPricer.getPrice(apiKey, attractionId, adults, children, nightsStay, rewardsPoints);
+        List<Provider> providerDTOS = new ArrayList<>();
 
         providers.forEach(p ->
-                providerDTOS.add(new ProviderDTO(p.tripId, p.name, p.price)));
+                providerDTOS.add(new Provider(p.tripId, p.name, p.price)));
 
         return providerDTOS;
     }

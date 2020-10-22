@@ -6,7 +6,7 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':models')
+    implementation project(':common')
     implementation fileTree(dir: 'src/main/resources/libs', include: 'TripPricer.jar')
 }
 

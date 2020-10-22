@@ -1,10 +1,10 @@
 package tourGuide.integration;
 
+import common.models.localization.Attraction;
+import common.models.localization.VisitedLocation;
+import common.models.user.User;
+import common.models.user.UserReward;
 import gps.services.GpsUtilServiceImpl;
-import models.dto.AttractionDTO;
-import models.dto.VisitedLocationDTO;
-import models.user.User;
-import models.user.UserReward;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,8 @@ public class RewardsServiceImplIT {
 		TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
 
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		AttractionDTO attraction = gpsUtilServiceImpl.getAttractions().get(0);
-		user.addToVisitedLocations(new VisitedLocationDTO(user.getUserId(), attraction, new Date()));
+		Attraction attraction = gpsUtilServiceImpl.getAttractions().get(0);
+		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
 
 		rewardsServiceImpl.calculateRewards(user).join();
 
@@ -49,7 +49,7 @@ public class RewardsServiceImplIT {
 
 	@Test
 	public void isWithinAttractionProximity() {
-		AttractionDTO attraction = gpsUtilServiceImpl.getAttractions().get(0);
+		Attraction attraction = gpsUtilServiceImpl.getAttractions().get(0);
 		assertTrue(rewardsServiceImpl.isWithinAttractionProximity(attraction, attraction));
 	}
 
