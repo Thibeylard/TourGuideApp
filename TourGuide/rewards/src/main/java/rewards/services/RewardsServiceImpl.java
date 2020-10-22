@@ -82,4 +82,8 @@ public class RewardsServiceImpl implements RewardsService {
         double nauticalMiles = 60 * Math.toDegrees(angle);
         return STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
     }
+
+    public List<AttractionDTO> getAttractions() {
+        return attractions;
+    }
 }

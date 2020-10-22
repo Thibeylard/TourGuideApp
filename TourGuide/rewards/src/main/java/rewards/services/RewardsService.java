@@ -4,6 +4,7 @@ import models.dto.AttractionDTO;
 import models.dto.LocationDTO;
 import models.user.User;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface RewardsService {
@@ -19,4 +20,6 @@ public interface RewardsService {
     int getRewardPoints(AttractionDTO attraction, User user);
 
     double getDistance(LocationDTO loc1, LocationDTO loc2);
+
+    public List<AttractionDTO> getAttractions();
 }
