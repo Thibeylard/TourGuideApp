@@ -1,6 +1,5 @@
 package models.dto;
 
-import com.jsoniter.annotation.JsonCreator;
 import models.user.UserPreferences;
 
 public class UserPreferencesDTO {
@@ -13,7 +12,6 @@ public class UserPreferencesDTO {
     private int numberOfAdults;
     private int numberOfChildren;
 
-    @JsonCreator
     private UserPreferencesDTO() {
     }
 

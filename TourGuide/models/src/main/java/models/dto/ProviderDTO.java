@@ -3,9 +3,12 @@ package models.dto;
 import java.util.UUID;
 
 public class ProviderDTO {
-    public final String name;
-    public final double price;
-    public final UUID tripId;
+    public String name;
+    public double price;
+    public UUID tripId;
+
+    public ProviderDTO() {
+    }
 
     public ProviderDTO(UUID tripId, String name, double price) {
         this.name = name;

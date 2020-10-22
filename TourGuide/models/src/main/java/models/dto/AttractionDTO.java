@@ -8,6 +8,10 @@ public class AttractionDTO extends LocationDTO {
     public String state;
     public UUID attractionId;
 
+
+    public AttractionDTO() {
+    }
+
     public AttractionDTO(String attractionName, String city, String state, double latitude, double longitude) {
         super(latitude, longitude);
         this.attractionName = attractionName;
@@ -44,11 +48,11 @@ public class AttractionDTO extends LocationDTO {
         this.state = state;
     }
 
-    public UUID getAttractionId() {
+/*    public UUID getAttractionId() {
         return attractionId;
     }
 
     public void setAttractionId(UUID attractionId) {
         this.attractionId = attractionId;
-    }
+    }*/
 }

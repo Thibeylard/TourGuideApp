@@ -12,6 +12,9 @@ public class NearbyAttractionDTO {
     @JsonProperty("rewardPoints")
     int rewardPoints;
 
+    public NearbyAttractionDTO() {
+    }
+
     public NearbyAttractionDTO(double latitude, double longitude, double distance, int rewardPoints) {
         this.latitude = latitude;
         this.longitude = longitude;

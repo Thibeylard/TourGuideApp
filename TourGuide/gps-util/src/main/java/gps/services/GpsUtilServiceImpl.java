@@ -21,6 +21,7 @@ public class GpsUtilServiceImpl implements GpsUtilService {
     }
 
     public VisitedLocationDTO getUserLocation(UUID userId) {
+
         VisitedLocation visitedLocation = gpsUtil.getUserLocation(userId);
         return new VisitedLocationDTO(visitedLocation.userId,
                 new LocationDTO(visitedLocation.location.latitude, visitedLocation.location.longitude),

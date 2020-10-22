@@ -11,6 +11,9 @@ public class AttractionRecommendationDTO {
     @JsonProperty("nearbyAttractions")
     Map<String, NearbyAttractionDTO> nearbyAttractions;
 
+    public AttractionRecommendationDTO() {
+    }
+
     public AttractionRecommendationDTO(LocationDTO userPosition, Map<String, NearbyAttractionDTO> nearbyAttractions) {
         this.userPosition = userPosition;
         this.nearbyAttractions = nearbyAttractions;
