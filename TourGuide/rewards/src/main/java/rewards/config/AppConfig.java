@@ -1,10 +1,10 @@
 package rewards.config;
 
-import gps.services.GpsUtilService;
-import gps.services.GpsUtilServiceHttpImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import rewards.services.GpsUtilService;
+import rewards.services.GpsUtilServiceHttpImpl;
 
 @Configuration
 public class AppConfig {

@@ -5,7 +5,9 @@ import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
-import gps.services.GpsUtilService;
+import common.models.user.UserReward;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
 
@@ -29,7 +31,8 @@ public class RewardsServiceImpl implements RewardsService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
     private int proximityBuffer = defaultProximityBuffer;
 
-    public RewardsServiceImpl(GpsUtilService gpsUtil) {
+    @Autowired
+    public RewardsServiceImpl(@Qualifier("getGpsUtilService") GpsUtilService gpsUtil) {
         attractions = gpsUtil.getAttractions();
         this.rewardsCentral = new RewardCentral();
     }
@@ -50,7 +53,7 @@ public class RewardsServiceImpl implements RewardsService {
                             .filter(a -> nearAttraction(ul, a))
                             .forEach(a -> {
                                 if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
-                                    user.addUserReward(new common.models.user.UserReward(ul, a, getRewardPoints(a, user)));
+                                    user.addUserReward(new UserReward(ul, a, getRewardPoints(a, user)));
                                 }
                             });
                 })));
