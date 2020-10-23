@@ -25,7 +25,8 @@ public class RewardsServiceImpl implements RewardsService {
     private final int defaultProximityBuffer = 10;
     private final int attractionProximityRange = 200;
     private final RewardCentral rewardsCentral;
-    private final List<Attraction> attractions;
+    private final GpsUtilService gpsUtilService;
+    private List<Attraction> attractions;
 
     // Concurrency
     private final ExecutorService executorService = Executors.newFixedThreadPool(50);
@@ -33,12 +34,14 @@ public class RewardsServiceImpl implements RewardsService {
 
     @Autowired
     public RewardsServiceImpl(GpsUtilService gpsUtilService) {
-        this.attractions = new ArrayList<>();
+        this.gpsUtilService = gpsUtilService;
+        this.attractions = gpsUtilService.getAttractions();
         this.rewardsCentral = new RewardCentral();
     }
 
     @Override
     public void updateAttractions() {
+        this.attractions = gpsUtilService.getAttractions();
     }
 
     @Override

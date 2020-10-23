@@ -2,11 +2,12 @@ package rewards.controllers;
 
 import common.dtos.GetDistanceDTO;
 import common.dtos.GetRewardPointsDTO;
+import common.dtos.UserDTO;
 import common.dtos.WithinAttractionProximityDTO;
 import common.models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,22 +35,22 @@ public class RewardsController {
         rewardsService.setDefaultProximityBuffer();
     }
 
-    @GetMapping("rewards/calculateRewards")
-    public CompletableFuture<?> calculateRewards(@RequestBody User user) {
-        return rewardsService.calculateRewards(user);
+    @PostMapping("rewards/calculateRewards")
+    public CompletableFuture<?> calculateRewards(@RequestBody UserDTO dto) {
+        return rewardsService.calculateRewards(new User(dto));
     }
 
-    @GetMapping("rewards/isWithinAttractionProximity")
+    @PostMapping("rewards/isWithinAttractionProximity")
     public boolean isWithinAttractionProximity(@RequestBody WithinAttractionProximityDTO dto) {
         return rewardsService.isWithinAttractionProximity(dto.getAttraction(), dto.getLocation());
     }
 
-    @GetMapping("rewards/getRewardPoints")
+    @PostMapping("rewards/getRewardPoints")
     public int getRewardPoints(@RequestBody GetRewardPointsDTO dto) {
-        return rewardsService.getRewardPoints(dto.getAttraction(), dto.getUser());
+        return rewardsService.getRewardPoints(dto.getAttraction(), new User(dto.getUser()));
     }
 
-    @GetMapping("rewards/getDistance")
+    @PostMapping("rewards/getDistance")
     public double getDistance(@RequestBody GetDistanceDTO dto) {
         return rewardsService.getDistance(dto.getFirstLocation(), dto.getSecondLocation());
     }

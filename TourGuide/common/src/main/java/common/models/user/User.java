@@ -1,6 +1,7 @@
 package common.models.user;
 
 
+import common.dtos.UserDTO;
 import common.models.localization.VisitedLocation;
 import common.models.marketing.Provider;
 
@@ -27,15 +28,25 @@ public class User {
         this.emailAddress = emailAddress;
     }
 
+    public User(UserDTO userDTO) {
+        this.userId = userDTO.getUserId();
+        this.userName = userDTO.getUserName();
+        this.phoneNumber = userDTO.getPhoneNumber();
+        this.emailAddress = userDTO.getEmailAddress();
+        this.latestLocationTimestamp = userDTO.getLatestLocationTimestamp();
+        this.visitedLocations = userDTO.getVisitedLocations();
+        this.userRewards = userDTO.getUserRewards();
+    }
+
     public UUID getUserId() {
         return userId;
-	}
-	
-	public String getUserName() {
-		return userName;
-	}
-	
-	public void setPhoneNumber(String phoneNumber) {
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 	

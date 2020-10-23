@@ -1,21 +1,20 @@
 package common.dtos;
 
 import common.models.localization.Attraction;
-import common.models.user.User;
 
 public class GetRewardPointsDTO {
-    private User user;
+    private UserDTO user;
     private Attraction attraction;
 
     public GetRewardPointsDTO() {
     }
 
-    public GetRewardPointsDTO(User user, Attraction attraction) {
+    public GetRewardPointsDTO(UserDTO user, Attraction attraction) {
         this.user = user;
         this.attraction = attraction;
     }
 
-    public User getUser() {
+    public UserDTO getUser() {
         return user;
     }
 
