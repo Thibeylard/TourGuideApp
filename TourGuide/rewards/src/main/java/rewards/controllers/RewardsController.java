@@ -7,6 +7,7 @@ import common.models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import rewards.services.RewardsService;
@@ -23,12 +24,12 @@ public class RewardsController {
         this.rewardsService = rewardsService;
     }
 
-    @GetMapping("rewards/setProximityBuffer")
+    @PutMapping("rewards/setProximityBuffer")
     public void setProximityBuffer(int proximityBuffer) {
         rewardsService.setProximityBuffer(proximityBuffer);
     }
 
-    @GetMapping("rewards/setDefaultProximityBuffer")
+    @PutMapping("rewards/setDefaultProximityBuffer")
     public void setDefaultProximityBuffer() {
         rewardsService.setDefaultProximityBuffer();
     }

@@ -12,6 +12,8 @@ public interface RewardsService {
 
     void setDefaultProximityBuffer();
 
+    void updateAttractions();
+
     CompletableFuture<?> calculateRewards(User user);
 
     boolean isWithinAttractionProximity(Attraction attraction, Location location);
@@ -19,4 +21,5 @@ public interface RewardsService {
     int getRewardPoints(Attraction attraction, User user);
 
     double getDistance(Location loc1, Location loc2);
+
 }

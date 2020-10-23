@@ -10,3 +10,7 @@ dependencies {
     implementation fileTree(dir: 'src/main/resources/libs', include: 'TripPricer.jar')
 }
 
+jar {
+    enabled = true
+}
+

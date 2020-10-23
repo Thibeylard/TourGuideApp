@@ -10,3 +10,6 @@ dependencies {
     implementation fileTree(dir: 'src/main/resources/libs', include: 'gpsUtil.jar')
 }
 
+jar {
+	enabled = true
+}

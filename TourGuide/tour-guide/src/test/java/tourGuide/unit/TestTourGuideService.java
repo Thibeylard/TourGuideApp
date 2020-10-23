@@ -7,6 +7,7 @@ import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.marketing.Provider;
 import common.models.user.User;
+import gps.services.GpsUtilService;
 import gps.services.GpsUtilServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,13 +35,13 @@ import static org.mockito.Mockito.*;
 public class TestTourGuideService {
 
     @Autowired
-    private GpsUtilServiceImpl gpsUtilServiceImpl;
+    private GpsUtilService gpsUtilService;
     @Autowired
     private RewardsServiceImpl rewardsServiceImpl;
 
 	@Test
 	public void getUserLocation() {
-        GpsUtilServiceImpl gpsUtil = new GpsUtilServiceImpl();
+        GpsUtilService gpsUtil = new GpsUtilServiceImpl();
         RewardsServiceImpl rewardsServiceImpl = new RewardsServiceImpl(gpsUtil);
         InternalTestHelper.setInternalUserNumber(0);
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsServiceImpl);
@@ -54,7 +55,7 @@ public class TestTourGuideService {
 	@Test
 	public void addUser() {
         InternalTestHelper.setInternalUserNumber(0);
-        TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsServiceImpl);
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");

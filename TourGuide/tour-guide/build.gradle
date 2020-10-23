@@ -7,8 +7,8 @@ bootJar {
 
 dependencies {
     implementation project(':common')
-    implementation project(':rewards')
     implementation project(':gps')
+    implementation project(':rewards')
     implementation project(':trip-pricer')
 }
 

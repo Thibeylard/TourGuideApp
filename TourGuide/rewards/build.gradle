@@ -6,8 +6,11 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':gps')
     implementation project(':common')
+    implementation project(':gps')
     implementation fileTree(dir: 'src/main/resources/libs', include: 'RewardCentral.jar')
 }
 
+jar {
+    enabled = true
+}

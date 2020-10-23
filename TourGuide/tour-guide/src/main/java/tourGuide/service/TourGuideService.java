@@ -10,13 +10,13 @@ import common.models.marketing.Provider;
 import common.models.user.User;
 import common.models.user.UserPreferences;
 import common.models.user.UserReward;
-import gps.services.GpsUtilServiceImpl;
+import gps.services.GpsUtilService;
 import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rewards.services.RewardsServiceImpl;
+import rewards.services.RewardsService;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.tracker.Tracker;
 import tripPricer.services.TripPricerServiceImpl;
@@ -30,16 +30,16 @@ import java.util.stream.IntStream;
 @Service
 public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
-	private final GpsUtilServiceImpl gpsUtilServiceImpl;
-	private final RewardsServiceImpl rewardsServiceImpl;
+	private final GpsUtilService gpsUtilServiceImpl;
+	private final RewardsService rewardsServiceImpl;
 	private final TripPricerServiceImpl tripPricer = new TripPricerServiceImpl();
 	public final Tracker tracker;
 	boolean testMode = true;
 
 	@Autowired
-	public TourGuideService(GpsUtilServiceImpl gpsUtilServiceImpl, RewardsServiceImpl rewardsServiceImpl) {
-		this.gpsUtilServiceImpl = gpsUtilServiceImpl;
-		this.rewardsServiceImpl = rewardsServiceImpl;
+	public TourGuideService(GpsUtilService gpsUtilService, RewardsService rewardsService) {
+		this.gpsUtilServiceImpl = gpsUtilService;
+		this.rewardsServiceImpl = rewardsService;
 
 		if (testMode) {
 			logger.info("TestMode enabled");
@@ -47,7 +47,7 @@ public class TourGuideService {
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
 		}
-		this.tracker = new Tracker(this, gpsUtilServiceImpl, rewardsServiceImpl);
+		this.tracker = new Tracker(this, gpsUtilService, rewardsService);
 		addShutDownHook();
 	}
 

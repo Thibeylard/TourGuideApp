@@ -5,6 +5,7 @@ import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,10 +20,28 @@ public class RewardsServiceHttpImpl implements RewardsService {
         this.restTemplate = restTemplate;
     }
 
+    @Override
+    public void updateAttractions() {
+
+    }
+
     public void setProximityBuffer(int proximityBuffer) {
+        String params = "?proximityBuffer=" + proximityBuffer;
+        restTemplate.exchange(
+                "http://localhost:8080/rewards/setProximityBuffer" + params,
+                HttpMethod.PUT,
+                null,
+                Void.class
+        );
     }
 
     public void setDefaultProximityBuffer() {
+        restTemplate.exchange(
+                "http://localhost:8080/rewards/setDefaultProximityBuffer",
+                HttpMethod.PUT,
+                null,
+                Void.class
+        );
     }
 
     public CompletableFuture<?> calculateRewards(User user) {

@@ -6,8 +6,8 @@ import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
 import common.models.user.UserReward;
+import gps.services.GpsUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
 
@@ -32,19 +32,26 @@ public class RewardsServiceImpl implements RewardsService {
     private int proximityBuffer = defaultProximityBuffer;
 
     @Autowired
-    public RewardsServiceImpl(@Qualifier("getGpsUtilService") GpsUtilService gpsUtil) {
-        attractions = gpsUtil.getAttractions();
+    public RewardsServiceImpl(GpsUtilService gpsUtilService) {
+        this.attractions = new ArrayList<>();
         this.rewardsCentral = new RewardCentral();
     }
 
+    @Override
+    public void updateAttractions() {
+    }
+
+    @Override
     public void setProximityBuffer(int proximityBuffer) {
         this.proximityBuffer = proximityBuffer;
     }
 
+    @Override
     public void setDefaultProximityBuffer() {
         proximityBuffer = defaultProximityBuffer;
     }
 
+    @Override
     public CompletableFuture<?> calculateRewards(User user) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         futures.add(CompletableFuture.runAsync(() ->
@@ -61,6 +68,7 @@ public class RewardsServiceImpl implements RewardsService {
         return CompletableFuture.allOf(futures.stream().toArray(CompletableFuture[]::new));
     }
 
+    @Override
     public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
         return !(getDistance(attraction, location) > attractionProximityRange);
     }
@@ -69,10 +77,12 @@ public class RewardsServiceImpl implements RewardsService {
         return !(getDistance(attraction, visitedLocation.location) > proximityBuffer);
     }
 
+    @Override
     public int getRewardPoints(Attraction attraction, User user) {
         return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
     }
 
+    @Override
     public double getDistance(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);
