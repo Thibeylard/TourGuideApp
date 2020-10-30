@@ -13,8 +13,6 @@ import rewardCentral.RewardCentral;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 public class RewardsServiceImpl implements RewardsService {
@@ -28,7 +26,6 @@ public class RewardsServiceImpl implements RewardsService {
     private List<Attraction> attractions;
 
     // Concurrency
-    private final ExecutorService executorService = Executors.newFixedThreadPool(50);
     private int proximityBuffer = defaultProximityBuffer;
 
     @Autowired

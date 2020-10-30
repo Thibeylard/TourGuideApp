@@ -64,6 +64,7 @@ public class RewardsServiceHttpImpl implements RewardsService {
                 // TODO Handle exception
                 e.printStackTrace();
             }
+            // RewardsServiceHttpImpl doit redéfinir les récompenses utilisateurs qui ont été faite sur le dto dans le RewardsServiceImpl distant
             user.setUserRewards(dto.getUserRewards());
         });
     }

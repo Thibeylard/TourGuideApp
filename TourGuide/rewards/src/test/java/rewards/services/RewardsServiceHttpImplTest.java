@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -39,7 +38,7 @@ public class RewardsServiceHttpImplTest {
     private GpsUtilService gpsUtilService;
 
     @Test
-    public void Given_rewardsService_When_instantiated_Then_canModifyProximityBuffer() {
+    public void modifyingProximityBuffer() {
         rewardsServiceHttpImpl.setProximityBuffer(rewardsServiceImpl.getDefaultProximityBuffer() + 6);
         assertThat(rewardsServiceImpl.getProximityBuffer())
                 .isNotEqualTo(rewardsServiceImpl.getDefaultProximityBuffer())
@@ -52,7 +51,7 @@ public class RewardsServiceHttpImplTest {
     }
 
     @Test
-    public void Given_rewardsService_When_instantiated_Then_returnCompletableFuture() throws ExecutionException, InterruptedException {
+    public void calculateRewards() {
         List<Attraction> attractions = new GpsUtilServiceImpl().getAttractions();
 
         doReturn(attractions).when(gpsUtilService).getAttractions();
@@ -76,7 +75,7 @@ public class RewardsServiceHttpImplTest {
     }
 
     @Test
-    public void Given_rewardsService_When_instantiated_Then_isWithinAttractionProximityReturnValidBoolean() {
+    public void isWithinAttractionProximity() {
         Location location = new Location(45.984134, -12.458965);
         Attraction attraction = new Attraction("attraction", "city", "state", location.latitude, location.longitude);
         assertThat(rewardsServiceHttpImpl.isWithinAttractionProximity(attraction, location))
@@ -84,7 +83,7 @@ public class RewardsServiceHttpImplTest {
     }
 
     @Test
-    public void Given_rewardsService_When_instantiated_Then_getRewardPointsIsGreaterThanZero() {
+    public void getRewardPoints() {
         Location location = new Location(45.984134, -12.458965);
         User user = new User(UUID.randomUUID(), "user", "339 447 852", "user@mail.com");
         user.addToVisitedLocations(new VisitedLocation(user.getUserId(), location, Date.from(Instant.now())));
@@ -94,7 +93,7 @@ public class RewardsServiceHttpImplTest {
     }
 
     @Test
-    public void Given_rewardsService_When_instantiated_Then_getDistanceReturnValidDouble() {
+    public void getDistance() {
         Location location = new Location(45.984134, -12.458965);
         Location location1 = new Location(-45.984134, 12.458965);
         assertThat(rewardsServiceHttpImpl.getDistance(location, location1) > 0.0)

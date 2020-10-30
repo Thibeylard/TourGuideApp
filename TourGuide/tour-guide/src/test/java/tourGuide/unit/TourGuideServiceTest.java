@@ -7,6 +7,7 @@ import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.marketing.Provider;
 import common.models.user.User;
+import common.models.user.UserReward;
 import gps.services.GpsUtilService;
 import gps.services.GpsUtilServiceImpl;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -32,15 +34,15 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TestTourGuideService {
+public class TourGuideServiceTest {
 
     @Autowired
     private GpsUtilService gpsUtilService;
     @Autowired
-    private RewardsServiceImpl rewardsServiceImpl;
+    private RewardsServiceImpl rewardsService;
 
-	@Test
-	public void getUserLocation() {
+    @Test
+    public void getUserLocation() {
         GpsUtilService gpsUtil = new GpsUtilServiceImpl();
         RewardsServiceImpl rewardsServiceImpl = new RewardsServiceImpl(gpsUtil);
         InternalTestHelper.setInternalUserNumber(0);
@@ -55,7 +57,7 @@ public class TestTourGuideService {
 	@Test
 	public void addUser() {
         InternalTestHelper.setInternalUserNumber(0);
-        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsServiceImpl);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
 
         User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
         User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
@@ -189,6 +191,26 @@ public class TestTourGuideService {
         assertThat(attractionRecommendationDTO.getNearbyAttractions())
                 .hasSize(5);
 
+    }
+
+    @Test
+    // FIXED : Problem came from tracker who started automatically and also tried to calculateRewards for User.
+    public void nearAllAttractions() {
+        rewardsService.setProximityBuffer(Integer.MAX_VALUE);
+
+        InternalTestHelper.setInternalUserNumber(1);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
+
+        CompletableFuture<?>[] futures = tourGuideService.getAllUsers().stream()
+                .map(rewardsService::calculateRewards)
+                .toArray(CompletableFuture[]::new);
+        CompletableFuture.allOf(futures).join();
+
+        rewardsService.setDefaultProximityBuffer();
+
+        List<UserReward> userRewards = tourGuideService.getUserRewards(tourGuideService.getAllUsers().get(0));
+
+        assertEquals(gpsUtilService.getAttractions().size(), userRewards.size());
     }
 
     @Test
