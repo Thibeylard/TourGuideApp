@@ -1,6 +1,6 @@
 // :core build.gradle
 
-bootJar {
+bootWar {
     baseName = 'tourGuide-main'
     version =  '1.0.0'
 }

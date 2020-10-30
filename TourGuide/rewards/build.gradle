@@ -1,6 +1,6 @@
 // :rewards build.gradle
 
-bootJar {
+bootWar {
     baseName = 'tourGuide-rewards'
     version =  '1.0.0'
 }

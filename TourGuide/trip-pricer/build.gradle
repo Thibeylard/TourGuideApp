@@ -1,6 +1,6 @@
 // :trip-pricer build.gradle
 
-bootJar {
+bootWar {
     baseName = 'tourGuide-tripPricer'
     version =  '1.0.0'
 }

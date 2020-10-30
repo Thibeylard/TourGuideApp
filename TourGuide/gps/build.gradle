@@ -1,6 +1,6 @@
 // :gps-util build.gradle
 
-bootJar {
+bootWar {
     baseName = 'tourGuide-gpsUtil'
     version =  '1.0.0'
 }
