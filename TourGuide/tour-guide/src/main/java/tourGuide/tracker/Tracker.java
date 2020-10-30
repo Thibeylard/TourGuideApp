@@ -16,16 +16,16 @@ public class Tracker extends Thread {
     private final Logger logger = LoggerFactory.getLogger(Tracker.class);
     private final TourGuideService tourGuideService;
     private final GpsUtilService gpsUtil;
-    private final RewardsService rewardsServiceImpl;
+    private final RewardsService rewardsService;
     private final long trackingPollingInterval = TimeUnit.MINUTES.toSeconds(5);
     // Concurrency
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean stop = true;
 
-    public Tracker(TourGuideService tourGuideService, GpsUtilService gpsUtil, RewardsService rewardsServiceImpl) {
+    public Tracker(TourGuideService tourGuideService, GpsUtilService gpsUtil, RewardsService rewardsService) {
         this.tourGuideService = tourGuideService;
         this.gpsUtil = gpsUtil;
-        this.rewardsServiceImpl = rewardsServiceImpl;
+        this.rewardsService = rewardsService;
     }
 
     public void startTracking() {
@@ -69,7 +69,7 @@ public class Tracker extends Thread {
     public CompletableFuture<?> trackUserLocation(User user) {
         return CompletableFuture.supplyAsync(() -> gpsUtil.getUserLocation(user.getUserId()))
                 .thenAccept(user::addToVisitedLocations)
-                .thenRunAsync(() -> rewardsServiceImpl.calculateRewards(user));
+                .thenRunAsync(() -> rewardsService.calculateRewards(user));
     }
 
     public boolean isStopped() {

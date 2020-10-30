@@ -4,13 +4,13 @@ import common.models.localization.Attraction;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
 import common.models.user.UserReward;
-import gps.services.GpsUtilServiceImpl;
+import gps.services.GpsUtilService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import rewards.services.RewardsServiceImpl;
+import rewards.services.RewardsService;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.TourGuideService;
 
@@ -27,21 +27,21 @@ import static org.junit.Assert.assertTrue;
 public class RewardsServiceImplIT {
 
 	@Autowired
-	private GpsUtilServiceImpl gpsUtilServiceImpl;
+	private GpsUtilService gpsUtilService;
 	@Autowired
-	private RewardsServiceImpl rewardsServiceImpl;
+	private RewardsService rewardsService;
 
 	@Test
 	public void userGetRewards() {
 
 		InternalTestHelper.setInternalUserNumber(0);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
 
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
-		Attraction attraction = gpsUtilServiceImpl.getAttractions().get(0);
+		Attraction attraction = gpsUtilService.getAttractions().get(0);
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attraction, new Date()));
 
-		rewardsServiceImpl.calculateRewards(user).join();
+		rewardsService.calculateRewards(user).join();
 
 		List<UserReward> userRewards = user.getUserRewards();
 		assertEquals(1, userRewards.size());
@@ -49,28 +49,28 @@ public class RewardsServiceImplIT {
 
 	@Test
 	public void isWithinAttractionProximity() {
-		Attraction attraction = gpsUtilServiceImpl.getAttractions().get(0);
-		assertTrue(rewardsServiceImpl.isWithinAttractionProximity(attraction, attraction));
+		Attraction attraction = gpsUtilService.getAttractions().get(0);
+		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
 
 	@Test
 	// FIXED : Problem came from tracker who started automatically and also tried to calculateRewards for User.
 	public void nearAllAttractions() {
-		rewardsServiceImpl.setProximityBuffer(Integer.MAX_VALUE);
+		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 
 		InternalTestHelper.setInternalUserNumber(1);
-		TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
+		TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
 
 		CompletableFuture<?>[] futures = tourGuideService.getAllUsers().stream()
-				.map(rewardsServiceImpl::calculateRewards)
+				.map(rewardsService::calculateRewards)
 				.toArray(CompletableFuture[]::new);
 		CompletableFuture.allOf(futures).join();
 
-		rewardsServiceImpl.setDefaultProximityBuffer();
+		rewardsService.setDefaultProximityBuffer();
 
 		List<UserReward> userRewards = tourGuideService.getUserRewards(tourGuideService.getAllUsers().get(0));
 
-		assertEquals(gpsUtilServiceImpl.getAttractions().size(), userRewards.size());
+		assertEquals(gpsUtilService.getAttractions().size(), userRewards.size());
 	}
 
 }

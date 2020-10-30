@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rewardCentral.RewardCentral;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -56,19 +55,18 @@ public class RewardsServiceImpl implements RewardsService {
 
     @Override
     public CompletableFuture<?> calculateRewards(User user) {
-        List<CompletableFuture<?>> futures = new ArrayList<>();
-        futures.add(CompletableFuture.runAsync(() ->
-                user.getVisitedLocations().forEach(ul -> {
-                    attractions.stream()
-                            .filter(a -> nearAttraction(ul, a))
-                            .forEach(a -> {
-                                if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
-                                    user.addUserReward(new UserReward(ul, a, getRewardPoints(a, user)));
-                                }
-                            });
-                })));
-
-        return CompletableFuture.allOf(futures.stream().toArray(CompletableFuture[]::new));
+        return CompletableFuture.supplyAsync(() -> {
+            user.getVisitedLocations().forEach(ul -> {
+                attractions.stream()
+                        .filter(a -> nearAttraction(ul, a))
+                        .forEach(a -> {
+                            if (user.getUserRewards().stream().noneMatch(r -> r.attraction.attractionName.equals(a.attractionName))) {
+                                user.addUserReward(new UserReward(ul, a, getRewardPoints(a, user)));
+                            }
+                        });
+            });
+            return user;
+        });
     }
 
     @Override

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import rewards.services.RewardsService;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class RewardsController {
@@ -36,8 +36,8 @@ public class RewardsController {
     }
 
     @PostMapping("rewards/calculateRewards")
-    public CompletableFuture<?> calculateRewards(@RequestBody UserDTO dto) {
-        return rewardsService.calculateRewards(new User(dto));
+    public UserDTO calculateRewards(@RequestBody UserDTO dto) throws ExecutionException, InterruptedException {
+        return new UserDTO((User) rewardsService.calculateRewards(new User(dto)).get());
     }
 
     @PostMapping("rewards/isWithinAttractionProximity")

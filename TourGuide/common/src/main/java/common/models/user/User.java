@@ -85,9 +85,14 @@ public class User {
     public void addUserReward(UserReward userReward) {
         userRewards.add(userReward);
     }
-	
-	public List<UserReward> getUserRewards() {
-		return userRewards;
+
+    public void setUserRewards(List<UserReward> userRewards) {
+        this.userRewards.clear();
+        this.userRewards.addAll(userRewards);
+    }
+
+    public List<UserReward> getUserRewards() {
+        return userRewards;
     }
 
     public UserPreferences getUserPreferences() {

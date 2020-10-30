@@ -53,16 +53,19 @@ public class RewardsServiceHttpImpl implements RewardsService {
     }
 
     public CompletableFuture<?> calculateRewards(User user) {
-        /*try {
-            return restTemplate.exchange(
-                    new RequestEntity<>(user,HttpMethod.POST,new URI("http://localhost:8080/rewards/calculateRewards")),
-                    CompletableFuture.class
-            ).getBody();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }*/
-        // TODO Refactore method or fix it with CompletableFuture as return value
-        return null;
+        return CompletableFuture.runAsync(() -> {
+            UserDTO dto = new UserDTO(user);
+            try {
+                dto = restTemplate.exchange(
+                        new RequestEntity<>(user, HttpMethod.POST, new URI("http://localhost:8080/rewards/calculateRewards")),
+                        UserDTO.class
+                ).getBody();
+            } catch (URISyntaxException e) {
+                // TODO Handle exception
+                e.printStackTrace();
+            }
+            user.setUserRewards(dto.getUserRewards());
+        });
     }
 
     public boolean isWithinAttractionProximity(Attraction attraction, Location location) {

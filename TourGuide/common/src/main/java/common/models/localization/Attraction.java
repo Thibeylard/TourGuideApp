@@ -13,7 +13,7 @@ public class Attraction extends Location {
     }
 
     public Attraction(String attractionName, String city, String state, double latitude, double longitude) {
-        super(latitude, longitude);
+        super(longitude, latitude);
         this.attractionName = attractionName;
         this.city = city;
         this.state = state;
@@ -21,7 +21,7 @@ public class Attraction extends Location {
     }
 
     public Attraction(double latitude, double longitude) {
-        super(latitude, longitude);
+        super(longitude, latitude);
     }
 
     public String getAttractionName() {

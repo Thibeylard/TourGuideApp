@@ -6,7 +6,6 @@ import common.models.localization.VisitedLocation;
 import common.models.user.User;
 import gps.services.GpsUtilService;
 import gps.services.GpsUtilServiceImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -52,8 +52,7 @@ public class RewardsServiceHttpImplTest {
     }
 
     @Test
-    @Ignore
-    public void Given_rewardsService_When_instantiated_Then_returnCompletableFuture() {
+    public void Given_rewardsService_When_instantiated_Then_returnCompletableFuture() throws ExecutionException, InterruptedException {
         List<Attraction> attractions = new GpsUtilServiceImpl().getAttractions();
 
         doReturn(attractions).when(gpsUtilService).getAttractions();
@@ -61,14 +60,24 @@ public class RewardsServiceHttpImplTest {
 
         User user = new User(UUID.randomUUID(), "user", "339 447 852", "user@mail.com");
         user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attractions.get(0), Date.from(Instant.now())));
-        assertThat(rewardsServiceHttpImpl.calculateRewards(user))
+
+        assertThat(user.getUserRewards())
+                .hasSize(0);
+
+        CompletableFuture<?> answer = rewardsServiceHttpImpl.calculateRewards(user);
+        assertThat(answer)
                 .isNotNull()
                 .isInstanceOf(CompletableFuture.class);
+
+        answer.join();
+
+        assertThat(user.getUserRewards())
+                .hasSize(1);
     }
 
     @Test
     public void Given_rewardsService_When_instantiated_Then_isWithinAttractionProximityReturnValidBoolean() {
-        Location location = new Location(-12.458965, 45.984134);
+        Location location = new Location(45.984134, -12.458965);
         Attraction attraction = new Attraction("attraction", "city", "state", location.latitude, location.longitude);
         assertThat(rewardsServiceHttpImpl.isWithinAttractionProximity(attraction, location))
                 .isTrue();
@@ -76,7 +85,7 @@ public class RewardsServiceHttpImplTest {
 
     @Test
     public void Given_rewardsService_When_instantiated_Then_getRewardPointsIsGreaterThanZero() {
-        Location location = new Location(-12.458965, 45.984134);
+        Location location = new Location(45.984134, -12.458965);
         User user = new User(UUID.randomUUID(), "user", "339 447 852", "user@mail.com");
         user.addToVisitedLocations(new VisitedLocation(user.getUserId(), location, Date.from(Instant.now())));
         Attraction attraction = new Attraction("attraction", "city", "state", location.latitude, location.longitude);
@@ -86,8 +95,8 @@ public class RewardsServiceHttpImplTest {
 
     @Test
     public void Given_rewardsService_When_instantiated_Then_getDistanceReturnValidDouble() {
-        Location location = new Location(-12.458965, 45.984134);
-        Location location1 = new Location(12.458965, -45.984134);
+        Location location = new Location(45.984134, -12.458965);
+        Location location1 = new Location(-45.984134, 12.458965);
         assertThat(rewardsServiceHttpImpl.getDistance(location, location1) > 0.0)
                 .isTrue();
     }

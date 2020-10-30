@@ -22,7 +22,7 @@ public class GpsUtilServiceImpl implements GpsUtilService {
 
         gpsUtil.location.VisitedLocation visitedLocation = gpsUtil.getUserLocation(userId);
         return new VisitedLocation(visitedLocation.userId,
-                new Location(visitedLocation.location.latitude, visitedLocation.location.longitude),
+                new Location(visitedLocation.location.longitude, visitedLocation.location.latitude),
                 visitedLocation.timeVisited);
     }
 

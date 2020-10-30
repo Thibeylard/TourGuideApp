@@ -4,6 +4,7 @@ import gps.services.GpsUtilService;
 import gps.services.GpsUtilServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import rewards.services.RewardsServiceImpl;
 
 import java.util.Locale;
@@ -11,10 +12,15 @@ import java.util.Locale;
 @Configuration
 public class TourGuideModule {
 
-    @Bean
-    public GpsUtilService getGpsUtilService() {
-        return new GpsUtilServiceImpl();
-    }
+	@Bean
+	public RestTemplate getRestTemplate() {
+		return new RestTemplate();
+	}
+
+	@Bean
+	public GpsUtilService getGpsUtilService() {
+		return new GpsUtilServiceImpl();
+	}
 
 	@Bean
 	public RewardsServiceImpl getRewardsService() {

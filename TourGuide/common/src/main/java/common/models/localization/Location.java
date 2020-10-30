@@ -1,23 +1,23 @@
 package common.models.localization;
 
 public class Location {
-    public double latitude;
     public double longitude;
+    public double latitude;
 
     public Location() {
     }
 
-    public Location(double latitude, double longitude) {
-        this.latitude = latitude;
+    public Location(double longitude, double latitude) {
         this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return latitude;
+        this.latitude = latitude;
     }
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
     }
 
 }
