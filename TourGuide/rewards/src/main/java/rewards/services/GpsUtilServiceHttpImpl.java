@@ -1,23 +1,20 @@
-package gps.services;
+package rewards.services;
 
 import common.dtos.GetAttractionsDTO;
 import common.models.localization.Attraction;
 import common.models.localization.VisitedLocation;
-import org.springframework.beans.factory.annotation.Autowired;
+import gps.services.GpsUtilService;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Service
 public class GpsUtilServiceHttpImpl implements GpsUtilService {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    @Autowired
     public GpsUtilServiceHttpImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }

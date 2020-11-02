@@ -45,6 +45,22 @@ configure(springApps) {
 
     }
 
+    task integrationTests() {
+        dependsOn ':gps:bootRun'
+        dependsOn ':rewards:bootRun'
+        dependsOn ':trip-pricer:bootRun'
+        doLast {
+            test {
+                exclude '**'
+                include 'tourGuide/integration/**'
+            }
+        }
+    }
+
+    task performanceTest() {
+        //TODO add performance test configuration
+    }
+
     jacoco {
         toolVersion = "0.8.4"
     }

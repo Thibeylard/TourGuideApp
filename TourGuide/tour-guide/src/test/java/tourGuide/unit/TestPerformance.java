@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import rewards.services.RewardsServiceImpl;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.service.TourGuideService;
+import tourGuide.services.TourGuideService;
 
 import java.util.Date;
 import java.util.List;

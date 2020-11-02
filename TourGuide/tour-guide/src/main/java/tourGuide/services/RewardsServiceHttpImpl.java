@@ -1,4 +1,4 @@
-package rewards.services;
+package tourGuide.services;
 
 
 import common.dtos.GetDistanceDTO;
@@ -8,22 +8,19 @@ import common.dtos.WithinAttractionProximityDTO;
 import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import rewards.services.RewardsService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-@Service
 public class RewardsServiceHttpImpl implements RewardsService {
     private RestTemplate restTemplate;
 
-    @Autowired
     public RewardsServiceHttpImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -54,18 +51,19 @@ public class RewardsServiceHttpImpl implements RewardsService {
 
     public CompletableFuture<?> calculateRewards(User user) {
         return CompletableFuture.runAsync(() -> {
-            UserDTO dto = new UserDTO(user);
+            UserDTO dto;
             try {
                 dto = restTemplate.exchange(
                         new RequestEntity<>(user, HttpMethod.POST, new URI("http://localhost:8080/rewards/calculateRewards")),
                         UserDTO.class
                 ).getBody();
+                // RewardsServiceHttpImpl doit redéfinir les récompenses utilisateurs qui ont été faite sur le dto dans le RewardsServiceImpl distant
+                user.setUserRewards(dto.getUserRewards());
             } catch (URISyntaxException e) {
                 // TODO Handle exception
                 e.printStackTrace();
             }
-            // RewardsServiceHttpImpl doit redéfinir les récompenses utilisateurs qui ont été faite sur le dto dans le RewardsServiceImpl distant
-            user.setUserRewards(dto.getUserRewards());
+
         });
     }
 

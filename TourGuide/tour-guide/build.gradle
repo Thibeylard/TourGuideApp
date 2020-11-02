@@ -12,6 +12,11 @@ dependencies {
     implementation project(':trip-pricer')
 }
 
+test {
+    exclude 'tourGuide/integration/**'
+    exclude '**/*TestPerformance*'
+}
+
 check.dependsOn jacocoTestCoverageVerification
 
 jacocoTestCoverageVerification {

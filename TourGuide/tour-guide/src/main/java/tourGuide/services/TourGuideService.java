@@ -1,4 +1,4 @@
-package tourGuide.service;
+package tourGuide.services;
 
 import common.dtos.AttractionRecommendationDTO;
 import common.dtos.NearbyAttractionDTO;
