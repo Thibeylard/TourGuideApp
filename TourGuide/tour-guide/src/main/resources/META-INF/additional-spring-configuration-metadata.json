@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "trip-pricer.base-path",
+      "type": "java.lang.String",
+      "description": "Base path for tripPricer application endpoints."
+    },
+    {
+      "name": "rewards.base-path",
+      "type": "java.lang.String",
+      "description": "Base path for rewards application endpoints."
+    }
+  ]
+}
