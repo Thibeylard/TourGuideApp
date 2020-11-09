@@ -1,16 +1,28 @@
-version: 3.8
+version: "3.8"
 services:
   gps:
-    build: ./gps/
-    ports: 8081:81
-    container_name: gps-service
+    build: "./gps/"
+    #    ports: 8081:80
+    container_name: "gps-service"
+    command:
+      --Dspring.profile.active=docker
   rewards:
-    build: ./rewards/
-    ports: 8082:82
+    build: "./rewards/"
+    #    ports: 8082:80
     depends_on:
       - gps
-    container_name: rewards-service
-  tripPricer:
-    build: ./trip-pricer/
-    ports: 8083:83
-    container_name: trip-pricer-service
+    container_name: "rewards-service"
+    command:
+      --Dspring.profile.active=docker
+  trip-pricer:
+    build: "./trip-pricer/"
+    #    ports: 8083:80
+    container_name: "trip-pricer-service"
+    command:
+      --Dspring.profile.active=docker
+  tour-guide:
+    build: "./tour-guide/"
+    #    ports: 8080:80
+    container_name: "tour-guide-app"
+    command:
+      --Dspring.profile.active=docker

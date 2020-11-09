@@ -12,7 +12,7 @@ import rewards.services.GpsUtilServiceHttpImpl;
 public class AppConfig {
 
     @Bean
-    @Profile({"prod", "integrationTest"})
+    @Profile({"prod", "itest", "docker"})
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
@@ -24,7 +24,7 @@ public class AppConfig {
     }
 
     @Bean
-    @Profile({"prod", "integrationTest"})
+    @Profile({"prod", "itest", "docker"})
     public GpsUtilService getGpsUtilServiceHttpImpl() {
         return new GpsUtilServiceHttpImpl(getRestTemplate());
     }

@@ -28,20 +28,19 @@ public class TourGuideModule {
     // Production and Integration tests environment beans
 
     @Bean
-    @Profile({"prod", "itest"})
+    @Profile({"prod", "itest", "docker"})
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
     }
 
     @Bean
-    @Profile({"prod", "itest"})
+    @Profile({"prod", "itest", "docker"})
     public RewardsService getRewardsServiceHttp() {
         return new RewardsServiceHttpImpl(getRestTemplate());
     }
 
-
     @Bean
-    @Profile({"prod", "itest"})
+    @Profile({"prod", "itest", "docker"})
     public GpsUtilService getGpsUtilServiceHttp() {
         return new GpsUtilServiceHttpImpl(getRestTemplate());
     }
