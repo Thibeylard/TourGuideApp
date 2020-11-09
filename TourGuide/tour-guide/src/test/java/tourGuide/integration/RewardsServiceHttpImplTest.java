@@ -1,18 +1,17 @@
-package rewards.services;
+package tourGuide.integration;
 
 import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
-import gps.services.GpsUtilService;
 import gps.services.GpsUtilServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import rewards.services.RewardsService;
 
 import java.time.Instant;
 import java.util.Date;
@@ -21,41 +20,18 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
-@ActiveProfiles("test")
+@ActiveProfiles("itest")
 public class RewardsServiceHttpImplTest {
 
     @Autowired
-    private RewardsServiceHttpImpl rewardsServiceHttpImpl;
-
-    @Autowired
-    private RewardsServiceImpl rewardsServiceImpl;
-
-    @MockBean
-    private GpsUtilService gpsUtilService;
-
-    @Test
-    public void modifyingProximityBuffer() {
-        rewardsServiceHttpImpl.setProximityBuffer(rewardsServiceImpl.getDefaultProximityBuffer() + 6);
-        assertThat(rewardsServiceImpl.getProximityBuffer())
-                .isNotEqualTo(rewardsServiceImpl.getDefaultProximityBuffer())
-                .isEqualTo(rewardsServiceImpl.getDefaultProximityBuffer() + 6);
-
-        rewardsServiceHttpImpl.setDefaultProximityBuffer();
-        assertThat(rewardsServiceImpl.getProximityBuffer())
-                .isNotEqualTo(rewardsServiceImpl.getDefaultProximityBuffer() + 6)
-                .isEqualTo(rewardsServiceImpl.getDefaultProximityBuffer());
-    }
+    private RewardsService rewardsServiceHttpImpl;
 
     @Test
     public void calculateRewards() {
         List<Attraction> attractions = new GpsUtilServiceImpl().getAttractions();
-
-        doReturn(attractions).when(gpsUtilService).getAttractions();
-        rewardsServiceImpl.updateAttractions();
 
         User user = new User(UUID.randomUUID(), "user", "339 447 852", "user@mail.com");
         user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attractions.get(0), Date.from(Instant.now())));

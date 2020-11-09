@@ -5,7 +5,7 @@ import gps.services.GpsUtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rewards.services.RewardsService;
-import tourGuide.service.TourGuideService;
+import tourGuide.services.TourGuideService;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;

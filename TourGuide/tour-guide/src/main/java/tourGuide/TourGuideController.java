@@ -7,7 +7,7 @@ import common.models.marketing.Provider;
 import common.models.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tourGuide.service.TourGuideService;
+import tourGuide.services.TourGuideService;
 
 import java.util.List;
 

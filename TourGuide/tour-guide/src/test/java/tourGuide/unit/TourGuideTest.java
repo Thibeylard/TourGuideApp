@@ -1,4 +1,4 @@
-package tourGuide.integration;
+package tourGuide.unit;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
@@ -14,12 +14,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import tourGuide.service.TourGuideService;
+import tourGuide.services.TourGuideService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TourGuideIT {
+@ActiveProfiles("test")
+public class TourGuideTest {
 
     private MockMvc mockMvc;
 
@@ -67,7 +69,7 @@ public class TourGuideIT {
         assertThat(tourGuideService.tracker.isStopped())
                 .isFalse();
 
-        TimeUnit.SECONDS.sleep(1); // 1 second sleep is enough for 100 users to be located
+        TimeUnit.SECONDS.sleep(5); // 1 second sleep is enough for 100 users to be located
 
         assertThat(someUser.getLastVisitedLocation()) // Users have been successfully tracked
                 .usingRecursiveComparison()

@@ -12,6 +12,22 @@ dependencies {
     implementation project(':trip-pricer')
 }
 
+test {
+    exclude '/tourGuide/integration/**'
+    exclude '**/*TestPerformance*'
+    include '/tourGuide/unit/**'
+}
+
+task itest (type:Test) {
+    testClassesDirs = project.sourceSets.test.output.classesDirs
+    classpath = project.sourceSets.test.runtimeClasspath
+    exclude '/tourGuide/unit/**'
+    include '/tourGuide/integration/**'
+}
+
+itest.mustRunAfter test
+
+check.dependsOn itest
 check.dependsOn jacocoTestCoverageVerification
 
 jacocoTestCoverageVerification {

@@ -14,10 +14,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import rewards.services.RewardsServiceImpl;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.service.TourGuideService;
+import tourGuide.services.TourGuideService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class TourGuideServiceTest {
 
     @Autowired
