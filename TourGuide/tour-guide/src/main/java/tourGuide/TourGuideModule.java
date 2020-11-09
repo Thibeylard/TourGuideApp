@@ -16,40 +16,49 @@ import java.util.Locale;
 @Configuration
 public class TourGuideModule {
 
-	@Bean
-	@Profile("prod")
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
 
-	@Bean
-	@Profile({"dev", "test"})
-	public GpsUtilService getGpsUtilServiceImpl() {
-		return new GpsUtilServiceImpl();
-	}
+    // Common beans
 
-	@Bean
-	@Profile({"prod", "integrationTest"})
-	public GpsUtilService getGpsUtilServiceHttp() {
-		return new GpsUtilServiceHttpImpl(getRestTemplate());
-	}
+    @Bean
+    public Locale getLocale() {
+        Locale.setDefault(Locale.US);
+        return Locale.getDefault();
+    }
 
-	@Bean
-	@Profile({"dev", "test"})
-	public RewardsService getRewardsServiceImpl() {
-		return new RewardsServiceImpl(getGpsUtilServiceImpl());
-	}
+    // Production and Integration tests environment beans
 
-	@Bean
-	@Profile({"prod", "integrationTest"})
-	public RewardsService getRewardsServiceHttp() {
-		return new RewardsServiceHttpImpl(getRestTemplate());
-	}
+    @Bean
+    @Profile({"prod", "itest"})
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
 
-	@Bean
-	public Locale getLocale() {
-		Locale.setDefault(Locale.US);
-		return Locale.getDefault();
-	}
+    @Bean
+    @Profile({"prod", "itest"})
+    public RewardsService getRewardsServiceHttp() {
+        return new RewardsServiceHttpImpl(getRestTemplate());
+    }
+
+
+    @Bean
+    @Profile({"prod", "itest"})
+    public GpsUtilService getGpsUtilServiceHttp() {
+        return new GpsUtilServiceHttpImpl(getRestTemplate());
+    }
+
+    // Development and Unit tests environment beans
+
+    @Bean
+    @Profile({"dev", "test"})
+    public GpsUtilService getGpsUtilServiceImpl() {
+        return new GpsUtilServiceImpl();
+    }
+
+
+    @Bean
+    @Profile({"dev", "test"})
+    public RewardsService getRewardsServiceImpl() {
+        return new RewardsServiceImpl(getGpsUtilServiceImpl());
+    }
 
 }

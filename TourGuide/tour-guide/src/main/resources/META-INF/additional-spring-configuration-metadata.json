@@ -9,6 +9,11 @@
       "name": "rewards.base-path",
       "type": "java.lang.String",
       "description": "Base path for rewards application endpoints."
+    },
+    {
+      "name": "gps.base-path",
+      "type": "java.lang.String",
+      "description": "Base path for rewards application endpoints."
     }
   ]
 }

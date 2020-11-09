@@ -1,4 +1,4 @@
-package tourGuide.integration;
+package tourGuide.unit;
 
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
@@ -35,8 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("integrationTest")
-public class TourGuideIT {
+@ActiveProfiles("test")
+public class TourGuideTest {
 
     private MockMvc mockMvc;
 
@@ -69,7 +69,7 @@ public class TourGuideIT {
         assertThat(tourGuideService.tracker.isStopped())
                 .isFalse();
 
-        TimeUnit.SECONDS.sleep(1); // 1 second sleep is enough for 100 users to be located
+        TimeUnit.SECONDS.sleep(5); // 1 second sleep is enough for 100 users to be located
 
         assertThat(someUser.getLastVisitedLocation()) // Users have been successfully tracked
                 .usingRecursiveComparison()

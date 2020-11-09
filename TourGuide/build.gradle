@@ -9,7 +9,6 @@ buildscript {
 }
 
 def springApps = subprojects.findAll() { project -> project.name != "common" }
-
 configure(springApps) {
 
     buildscript {
@@ -35,7 +34,7 @@ configure(springApps) {
     }
 
     dependencies {
-        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+        compileOnly "org.springframework.boot:spring-boot-configuration-processor"
         compile 'org.springframework.boot:spring-boot-starter-web'
         compile 'org.springframework.boot:spring-boot-starter-actuator'
 
@@ -46,9 +45,7 @@ configure(springApps) {
 
     }
 
-    bootRun {
 
-    }
     task performanceTest() {
         //TODO add performance test configuration
     }
@@ -67,16 +64,4 @@ configure(springApps) {
 
     test.finalizedBy jacocoTestReport
 
-}
-
-task integrationTests() {
-    dependsOn ':gps:bootRun'
-    dependsOn ':rewards:bootRun'
-    dependsOn ':trip-pricer:bootRun'
-    doLast {
-        test {
-            exclude '**'
-            include 'tourGuide/integration/**'
-        }
-    }
 }

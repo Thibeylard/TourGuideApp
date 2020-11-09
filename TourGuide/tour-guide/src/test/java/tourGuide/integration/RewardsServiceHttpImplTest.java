@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
-@ActiveProfiles("test")
+@ActiveProfiles("itest")
 public class RewardsServiceHttpImplTest {
 
     @Autowired

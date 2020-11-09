@@ -15,16 +15,16 @@ import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
-@ActiveProfiles("integrationTest")
+@ActiveProfiles("itest")
 public class GpsUtilServiceHttpImplTest {
 
     @Autowired
-    private GpsUtilService gpsUtilServiceHttp;
+    private GpsUtilService gpsUtilService;
 
     @Test
     public void Given_rewardsService_When_instantiated_Then_getUserLocationReturnVisitedLocation() {
         UUID userId = new UUID(4872158, 1875147);
-        Assertions.assertThat(gpsUtilServiceHttp.getUserLocation(userId))
+        Assertions.assertThat(gpsUtilService.getUserLocation(userId))
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("userId", userId)
                 .hasFieldOrProperty("location")
@@ -33,7 +33,7 @@ public class GpsUtilServiceHttpImplTest {
 
     @Test
     public void Given_rewardsService_When_instantiated_Then_attractionListIsNotNullNorEmpty() {
-        List<Attraction> attractionList = gpsUtilServiceHttp.getAttractions();
+        List<Attraction> attractionList = gpsUtilService.getAttractions();
         Assertions.assertThat(attractionList)
                 .isNotNull()
                 .isNotEmpty();
