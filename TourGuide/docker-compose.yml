@@ -1,0 +1,16 @@
+version: 3.8
+services:
+  gps:
+    build: ./gps/
+    ports: 8081:81
+    container_name: gps-service
+  rewards:
+    build: ./rewards/
+    ports: 8082:82
+    depends_on:
+      - gps
+    container_name: rewards-service
+  tripPricer:
+    build: ./trip-pricer/
+    ports: 8083:83
+    container_name: trip-pricer-service
