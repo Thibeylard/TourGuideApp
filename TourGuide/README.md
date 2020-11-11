@@ -13,5 +13,6 @@ there are four Spring Applications
     
 ## How to run integration tests
 If you want to run itest task from **tour-guide** module, 
-first run instances of **gps**, **rewards**, and **trip-pricer** 
-modules in separated terminals.
+first run following command in project root directory : _docker-compose up --build_
+
+Once all modules are ready, run task.
