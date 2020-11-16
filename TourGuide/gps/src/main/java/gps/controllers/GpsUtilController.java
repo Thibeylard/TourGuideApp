@@ -2,7 +2,7 @@ package gps.controllers;
 
 import common.dtos.GetAttractionsDTO;
 import common.models.localization.VisitedLocation;
-import gps.services.GpsUtilService;
+import common.services.GpsUtilService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,9 +1,10 @@
-package tourGuide.unit;
+package tourGuide.integration;
 
 import common.models.localization.Attraction;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
-import gps.services.GpsUtilServiceImpl;
+import common.services.GpsUtilService;
+import common.services.RewardsService;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import rewards.services.RewardsServiceImpl;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.services.TourGuideService;
 
@@ -26,13 +26,13 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("itest")
 public class TestPerformance {
 
     @Autowired
-    private GpsUtilServiceImpl gpsUtilServiceImpl;
+    private GpsUtilService gpsUtilService;
     @Autowired
-    private RewardsServiceImpl rewardsServiceImpl;
+    private RewardsService rewardsService;
 
     /*
      * A note on performance improvements:
@@ -59,7 +59,7 @@ public class TestPerformance {
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
         InternalTestHelper.setInternalUserNumber(100000);
         StopWatch stopWatch = new StopWatch();
-        TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
 
         List<User> allUsers = tourGuideService.getAllUsers();
 
@@ -71,6 +71,7 @@ public class TestPerformance {
                 .map(u -> u.getVisitedLocations().size())
                 .collect(Collectors.toList());
 
+        System.out.println("Start watch");
         stopWatch.start();
         CompletableFuture<?>[] futures = allUsers.stream()
                 .map(tourGuideService.tracker::trackUserLocation)
@@ -97,8 +98,8 @@ public class TestPerformance {
         InternalTestHelper.setInternalUserNumber(100000);
         StopWatch stopWatch = new StopWatch();
 
-        TourGuideService tourGuideService = new TourGuideService(gpsUtilServiceImpl, rewardsServiceImpl);
-        List<Attraction> attractions = gpsUtilServiceImpl.getAttractions();
+        TourGuideService tourGuideService = new TourGuideService(gpsUtilService, rewardsService);
+        List<Attraction> attractions = gpsUtilService.getAttractions();
         List<User> allUsers = tourGuideService.getAllUsers();
 
         allUsers.forEach(u ->
@@ -107,7 +108,7 @@ public class TestPerformance {
 
         stopWatch.start();
         CompletableFuture<?>[] futures = allUsers.stream()
-                .map(rewardsServiceImpl::calculateRewards)
+                .map(rewardsService::calculateRewards)
                 .toArray(CompletableFuture[]::new);
         CompletableFuture.allOf(futures).join();
         stopWatch.stop();

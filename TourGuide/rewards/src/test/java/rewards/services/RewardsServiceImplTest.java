@@ -4,7 +4,7 @@ import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
-import gps.services.GpsUtilService;
+import common.services.GpsUtilService;
 import gps.services.GpsUtilServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;

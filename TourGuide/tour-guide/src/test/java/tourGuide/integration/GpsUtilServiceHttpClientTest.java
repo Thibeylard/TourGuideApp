@@ -1,7 +1,7 @@
 package tourGuide.integration;
 
 import common.models.localization.Attraction;
-import gps.services.GpsUtilService;
+import common.services.GpsUtilService;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
 @ActiveProfiles("itest")
-public class GpsUtilServiceHttpImplTest {
+public class GpsUtilServiceHttpClientTest {
 
     @Autowired
     private GpsUtilService gpsUtilService;

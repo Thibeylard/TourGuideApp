@@ -3,14 +3,14 @@ services:
   gps:
     build: "./gps/"
     ports:
-      - 8081:8081
+      - 8081:8080
     container_name: "gps-service"
     command:
       "--spring.profiles.active=docker"
   rewards:
     build: "./rewards/"
     ports:
-      - 8082:8082
+      - 8082:8080
     depends_on:
       - gps
     container_name: "rewards-service"
@@ -19,7 +19,7 @@ services:
   trip-pricer:
     build: "./trip-pricer/"
     ports:
-      - 8083:8083
+      - 8083:8080
     container_name: "trip-pricer-service"
     command:
       "--spring.profiles.active=docker"

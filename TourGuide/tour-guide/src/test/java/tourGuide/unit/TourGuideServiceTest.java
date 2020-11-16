@@ -8,7 +8,8 @@ import common.models.localization.VisitedLocation;
 import common.models.marketing.Provider;
 import common.models.user.User;
 import common.models.user.UserReward;
-import gps.services.GpsUtilService;
+import common.services.GpsUtilService;
+import common.services.RewardsService;
 import gps.services.GpsUtilServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,12 +42,12 @@ public class TourGuideServiceTest {
     @Autowired
     private GpsUtilService gpsUtilService;
     @Autowired
-    private RewardsServiceImpl rewardsService;
+    private RewardsService rewardsService;
 
     @Test
     public void getUserLocation() {
         GpsUtilService gpsUtil = new GpsUtilServiceImpl();
-        RewardsServiceImpl rewardsServiceImpl = new RewardsServiceImpl(gpsUtil);
+        RewardsService rewardsServiceImpl = new RewardsServiceImpl(gpsUtil);
         InternalTestHelper.setInternalUserNumber(0);
         TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsServiceImpl);
 

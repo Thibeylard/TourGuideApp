@@ -1,4 +1,4 @@
-package rewards.services;
+package common.services;
 
 import common.models.localization.Attraction;
 import common.models.localization.Location;

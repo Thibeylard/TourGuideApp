@@ -4,6 +4,7 @@ import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
+import common.services.RewardsService;
 import gps.services.GpsUtilServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import rewards.services.RewardsService;
 
 import java.time.Instant;
 import java.util.Date;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
 @ActiveProfiles("itest")
-public class RewardsServiceHttpImplTest {
+public class RewardsServiceHttpClientTest {
 
     @Autowired
     private RewardsService rewardsServiceHttpImpl;

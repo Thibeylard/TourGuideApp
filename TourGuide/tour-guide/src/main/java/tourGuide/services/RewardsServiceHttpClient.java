@@ -8,23 +8,23 @@ import common.dtos.WithinAttractionProximityDTO;
 import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.user.User;
+import common.services.RewardsService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.web.client.RestTemplate;
-import rewards.services.RewardsService;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-public class RewardsServiceHttpImpl implements RewardsService {
+public class RewardsServiceHttpClient implements RewardsService {
     private RestTemplate restTemplate;
     @Value("${rewards.base-path}")
     private String basePath;
 
-    public RewardsServiceHttpImpl(RestTemplate restTemplate) {
+    public RewardsServiceHttpClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -60,7 +60,7 @@ public class RewardsServiceHttpImpl implements RewardsService {
                         new RequestEntity<>(user, HttpMethod.POST, new URI(basePath + "/rewards/calculateRewards")),
                         UserDTO.class
                 ).getBody();
-                // RewardsServiceHttpImpl doit redéfinir les récompenses utilisateurs qui ont été faite sur le dto dans le RewardsServiceImpl distant
+                // RewardsServiceHttpClient doit redéfinir les récompenses utilisateurs qui ont été faite sur le dto dans le RewardsServiceImpl distant
                 user.setUserRewards(dto.getUserRewards());
             } catch (URISyntaxException e) {
                 // TODO Handle exception

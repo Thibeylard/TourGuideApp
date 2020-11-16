@@ -3,6 +3,7 @@ package gps.services;
 import common.models.localization.Attraction;
 import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
+import common.services.GpsUtilService;
 import gpsUtil.GpsUtil;
 import org.springframework.stereotype.Service;
 

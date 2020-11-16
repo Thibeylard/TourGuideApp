@@ -1,12 +1,12 @@
 package rewards.config;
 
-import gps.services.GpsUtilService;
+import common.services.GpsUtilService;
 import gps.services.GpsUtilServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestTemplate;
-import rewards.services.GpsUtilServiceHttpImpl;
+import rewards.services.GpsUtilServiceHttpClient;
 
 @Configuration
 public class AppConfig {
@@ -26,6 +26,6 @@ public class AppConfig {
     @Bean
     @Profile({"prod", "itest", "docker"})
     public GpsUtilService getGpsUtilServiceHttpImpl() {
-        return new GpsUtilServiceHttpImpl(getRestTemplate());
+        return new GpsUtilServiceHttpClient(getRestTemplate());
     }
 }

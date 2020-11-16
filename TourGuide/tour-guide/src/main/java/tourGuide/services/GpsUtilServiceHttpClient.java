@@ -1,9 +1,9 @@
-package rewards.services;
+package tourGuide.services;
 
 import common.dtos.GetAttractionsDTO;
 import common.models.localization.Attraction;
 import common.models.localization.VisitedLocation;
-import gps.services.GpsUtilService;
+import common.services.GpsUtilService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class GpsUtilServiceHttpImpl implements GpsUtilService {
+public class GpsUtilServiceHttpClient implements GpsUtilService {
 
     private final RestTemplate restTemplate;
     @Value("${gps.base-path}")
     private String basePath;
 
-    public GpsUtilServiceHttpImpl(RestTemplate restTemplate) {
+    public GpsUtilServiceHttpClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

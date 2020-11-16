@@ -5,13 +5,13 @@ import common.dtos.GetRewardPointsDTO;
 import common.dtos.UserDTO;
 import common.dtos.WithinAttractionProximityDTO;
 import common.models.user.User;
+import common.services.RewardsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import rewards.services.RewardsService;
 
 import java.util.concurrent.ExecutionException;
 

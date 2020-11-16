@@ -1,15 +1,15 @@
 package tourGuide;
 
-import gps.services.GpsUtilService;
+import common.services.GpsUtilService;
+import common.services.RewardsService;
 import gps.services.GpsUtilServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestTemplate;
-import rewards.services.GpsUtilServiceHttpImpl;
-import rewards.services.RewardsService;
+import rewards.services.GpsUtilServiceHttpClient;
 import rewards.services.RewardsServiceImpl;
-import tourGuide.services.RewardsServiceHttpImpl;
+import tourGuide.services.RewardsServiceHttpClient;
 
 import java.util.Locale;
 
@@ -36,13 +36,13 @@ public class TourGuideModule {
     @Bean
     @Profile({"prod", "itest", "docker"})
     public RewardsService getRewardsServiceHttp() {
-        return new RewardsServiceHttpImpl(getRestTemplate());
+        return new RewardsServiceHttpClient(getRestTemplate());
     }
 
     @Bean
     @Profile({"prod", "itest", "docker"})
     public GpsUtilService getGpsUtilServiceHttp() {
-        return new GpsUtilServiceHttpImpl(getRestTemplate());
+        return new GpsUtilServiceHttpClient(getRestTemplate());
     }
 
     // Development and Unit tests environment beans
