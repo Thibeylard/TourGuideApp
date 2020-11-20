@@ -1,10 +1,10 @@
 package tripPricer.controllers;
 
 import common.models.marketing.Provider;
+import common.services.TripPricerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tripPricer.services.TripPricerService;
 
 import java.util.List;
 import java.util.UUID;

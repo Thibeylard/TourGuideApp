@@ -1,6 +1,7 @@
 package tripPricer.services;
 
 import common.models.marketing.Provider;
+import common.services.TripPricerService;
 import org.springframework.stereotype.Service;
 import tripPricer.TripPricer;
 

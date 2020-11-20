@@ -28,11 +28,6 @@ public class RewardsServiceHttpClient implements RewardsService {
         this.restTemplate = restTemplate;
     }
 
-    @Override
-    public void updateAttractions() {
-
-    }
-
     public void setProximityBuffer(int proximityBuffer) {
         String params = "?proximityBuffer=" + proximityBuffer;
         restTemplate.exchange(

@@ -1,4 +1,4 @@
-package tripPricer.services;
+package common.services;
 
 import common.models.marketing.Provider;
 
