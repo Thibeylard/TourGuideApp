@@ -18,13 +18,13 @@ public class TripPricerServiceImpl implements TripPricerService {
     }
 
     public List<Provider> getPrice(String apiKey, UUID attractionId, int adults, int children, int nightsStay, int rewardsPoints) {
-        List<tripPricer.Provider> providers = tripPricer.getPrice(apiKey, attractionId, adults, children, nightsStay, rewardsPoints);
-        List<Provider> providerDTOS = new ArrayList<>();
+        List<tripPricer.Provider> jarProviders = tripPricer.getPrice(apiKey, attractionId, adults, children, nightsStay, rewardsPoints);
+        List<Provider> providers = new ArrayList<>();
 
-        providers.forEach(p ->
-                providerDTOS.add(new Provider(p.tripId, p.name, p.price)));
+        jarProviders.forEach(p ->
+                providers.add(new Provider(p.tripId, p.name, p.price)));
 
-        return providerDTOS;
+        return providers;
     }
 
     public String getProviderName(String apiKey, int adults) {
