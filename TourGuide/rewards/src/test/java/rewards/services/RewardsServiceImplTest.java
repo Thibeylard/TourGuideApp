@@ -5,12 +5,10 @@ import common.models.localization.Location;
 import common.models.localization.VisitedLocation;
 import common.models.user.User;
 import common.services.GpsUtilService;
-import gps.services.GpsUtilServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,18 +21,16 @@ import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class RewardsServiceImplTest {
 
-	private final GpsUtilServiceImpl gpsUtilServiceImpl = new GpsUtilServiceImpl();
 	@Autowired
 	private RewardsServiceImpl rewardsServiceImpl;
-	@MockBean
-	private GpsUtilService gpsUtilService;
+	@Autowired
+	private GpsUtilService gpsUtilServiceImpl;
 
 	@Test
 	public void modifyingProximityBuffer() {
@@ -58,9 +54,6 @@ public class RewardsServiceImplTest {
 	@Test
 	public void calculateRewards() throws ExecutionException, InterruptedException {
 		List<Attraction> attractions = gpsUtilServiceImpl.getAttractions();
-
-		doReturn(attractions).when(gpsUtilService).getAttractions();
-		rewardsServiceImpl.updateAttractions();
 
 		User user = new User(UUID.randomUUID(), "user", "339 447 852", "user@mail.com");
 		user.addToVisitedLocations(new VisitedLocation(user.getUserId(), attractions.get(0), Date.from(Instant.now())));
