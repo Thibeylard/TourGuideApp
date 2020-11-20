@@ -46,11 +46,6 @@ configure(springApps) {
 
     }
 
-
-    task performanceTest() {
-        //TODO add performance test configuration
-    }
-
     jacoco {
         toolVersion = "0.8.4"
     }

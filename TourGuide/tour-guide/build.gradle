@@ -25,9 +25,6 @@ task itest (type:Test) {
     include '/tourGuide/integration/**'
 }
 
-itest.mustRunAfter test
-
-check.dependsOn itest
 check.dependsOn jacocoTestCoverageVerification
 
 jacocoTestCoverageVerification {
