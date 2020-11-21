@@ -1,13 +1,11 @@
 package tripPricer.controllers;
 
-import common.models.marketing.Provider;
+import common.dtos.GetPriceDTO;
 import common.services.TripPricerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class TripPricerController {
@@ -18,9 +16,15 @@ public class TripPricerController {
         this.tripPricerService = tripPricerService;
     }
 
-    @GetMapping("tripPricer/getPrice")
-    public List<Provider> getPrice(String apiKey, UUID attractionId, int adults, int children, int nightsStay, int rewardsPoints) {
-        return tripPricerService.getPrice(apiKey, attractionId, adults, children, nightsStay, rewardsPoints);
+    @PostMapping("tripPricer/getPrice")
+    public GetPriceDTO getPrice(GetPriceDTO dto) {
+        return dto.withProviders(tripPricerService.getPrice(
+                dto.getApiKey(),
+                dto.getAttractionId(),
+                dto.getAdults(),
+                dto.getChildren(),
+                dto.getNightsStay(),
+                dto.getRewardsPoints()));
     }
 
     @GetMapping("tripPricer/getProviderName")
