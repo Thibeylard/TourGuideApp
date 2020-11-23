@@ -16,7 +16,7 @@ import java.util.UUID;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @RunWith(SpringRunner.class)
 @ActiveProfiles("itest")
-public class GpsUtilServiceHttpClientTest {
+public class GpsUtilServiceHttpClientIT {
 
     @Autowired
     private GpsUtilService gpsUtilService;

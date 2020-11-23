@@ -11,3 +11,19 @@ dependencies {
     implementation project(':rewards')
     implementation project(':trip-pricer')
 }
+
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.5
+            }
+        }
+    }
+}
+
+
+check.dependsOn jacocoTestCoverageVerification
