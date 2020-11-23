@@ -58,6 +58,33 @@ configure(springApps) {
         }
     }
 
+    check.dependsOn jacocoTestCoverageVerification
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                limit {
+                    counter = 'LINE'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.5
+                }
+            }
+        }
+    }
+
+    test {
+        exclude '/tourGuide/integration/**'
+        include '/tourGuide/unit/**'
+    }
+
+    task itest (type:Test) {
+        testClassesDirs = project.sourceSets.test.output.classesDirs
+        classpath = project.sourceSets.test.runtimeClasspath
+        exclude '/tourGuide/unit/**'
+        include '/tourGuide/integration/**'
+    }
+
     test.finalizedBy jacocoTestReport
+    itest.finalizedBy jacocoTestReport
 
 }

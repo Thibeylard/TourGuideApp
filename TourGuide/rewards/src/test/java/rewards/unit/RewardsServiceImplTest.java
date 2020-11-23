@@ -1,4 +1,4 @@
-package rewards.services;
+package rewards.unit;
 
 import common.models.localization.Attraction;
 import common.models.localization.Location;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import rewards.services.RewardsServiceImpl;
 
 import java.time.Instant;
 import java.util.Date;
