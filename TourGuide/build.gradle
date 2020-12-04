@@ -51,13 +51,15 @@ configure(springApps) {
     }
 
     jacocoTestReport {
+        sourceSets sourceSets.main
+        /* EXECUTION DATA CONFIGURATION IS NEEDED : ELSE, ONLY test.exec FILE IS SCANNED FOR REPORT */ 
+        executionData = fileTree(buildDir).include("/jacoco/*.exec")
         reports {
             xml.enabled true
             csv.enabled false
             html.destination file("${buildDir}/jacocoHtml")
         }
     }
-
     test {
         exclude '/**/integration/**'
         include '/**/unit/**'
