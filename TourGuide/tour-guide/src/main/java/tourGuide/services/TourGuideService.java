@@ -79,7 +79,7 @@ public class TourGuideService {
 	public HashMap<String, Location> getAllUsersLastLocation() {
 		HashMap<String, Location> usersLastLocation = new HashMap<>();
 		getAllUsers()
-				.forEach(u -> usersLastLocation.put(u.getLastVisitedLocation().userId.toString(), u.getLastVisitedLocation().location));
+				.forEach(u -> usersLastLocation.put(u.getUserId().toString(), u.getLastVisitedLocation().location));
 		return usersLastLocation;
 	}
 

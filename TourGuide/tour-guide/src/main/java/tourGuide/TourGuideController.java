@@ -27,40 +27,40 @@ public class TourGuideController {
     }
 
     //TODO secure endpoint
-    @RequestMapping("/admin/action/startTracker")
+    @PostMapping("/admin/action/startTracker")
     public void startTracker() {
         tourGuideService.tracker.startTracking();
     }
 
     // TODO secure endpoint
-    @RequestMapping("/admin/action/stopTracker")
+    @PostMapping("/admin/action/stopTracker")
     public void stopTracker() {
         tourGuideService.tracker.stopTracking();
     }
 
     // TODO secure endpoint
-    @RequestMapping("/admin/action/getAllUsersLocations")
+    @GetMapping("/admin/action/getAllUsersLocations")
     public String getAllCurrentLocations() {
         return JsonStream.serialize(tourGuideService.getAllUsersLastLocation());
     }
 
-    @RequestMapping("/user/getLocation")
+    @GetMapping("/user/getLocation")
     public String getLocation(@RequestParam String userName) {
         VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
         return JsonStream.serialize(visitedLocation.location);
     }
 
-    @RequestMapping("/user/getNearbyAttractions")
+    @GetMapping("/user/getNearbyAttractions")
     public String getNearbyAttractions(@RequestParam String userName) {
         return JsonStream.serialize(tourGuideService.getUserAttractionRecommendation(userName));
     }
 
-    @RequestMapping("/user/getRewards")
+    @GetMapping("/user/getRewards")
     public String getRewards(@RequestParam String userName) {
         return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
     }
 
-    @RequestMapping("/user/getTripDeals")
+    @GetMapping("/user/getTripDeals")
     public String getTripDeals(@RequestParam String userName) {
         List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
         return JsonStream.serialize(providers);
