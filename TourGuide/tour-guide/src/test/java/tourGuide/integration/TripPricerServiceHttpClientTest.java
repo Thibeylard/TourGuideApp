@@ -27,11 +27,4 @@ public class TripPricerServiceHttpClientTest {
                 .hasOnlyElementsOfType(Provider.class)
                 .hasSize(5);
     }
-
-    @Test
-    public void getProviderName() {
-        assertThat(tripPricerServiceHttpImpl.getProviderName("test", 2))
-                .isInstanceOf(String.class)
-                .hasSizeGreaterThan(5);
-    }
 }

@@ -28,10 +28,4 @@ public class TripPricerServiceImplTest {
                 .hasSize(5);
     }
 
-    @Test
-    public void getProviderName() {
-        assertThat(tripPricerService.getProviderName("test", 2))
-                .isInstanceOf(String.class)
-                .hasSizeGreaterThan(5);
-    }
 }

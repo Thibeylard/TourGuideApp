@@ -3,7 +3,6 @@ package tripPricer.controllers;
 import common.dtos.GetPriceDTO;
 import common.services.TripPricerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,10 +24,5 @@ public class TripPricerController {
                 dto.getChildren(),
                 dto.getNightsStay(),
                 dto.getRewardsPoints()));
-    }
-
-    @GetMapping("tripPricer/getProviderName")
-    public String getProviderName(String apiKey, int adults) {
-        return tripPricerService.getProviderName(apiKey, adults);
     }
 }
