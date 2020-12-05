@@ -46,14 +46,4 @@ public class TripPricerServiceHttpClient implements TripPricerService {
         return price == null ? new ArrayList<>() : price.getProviders();
     }
 
-    @Override
-    public String getProviderName(String apiKey, int adults) {
-        String params = "?apiKey=" + apiKey + "&adults=" + adults;
-        return restTemplate.exchange(
-                basePath + "/tripPricer/getProviderName" + params,
-                HttpMethod.GET,
-                null,
-                String.class
-        ).getBody();
-    }
 }

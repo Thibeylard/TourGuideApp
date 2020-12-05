@@ -1,5 +1,7 @@
 package tourGuide.unit;
 
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 import com.jsoniter.output.JsonStream;
 import common.dtos.AttractionRecommendationDTO;
 import common.models.localization.Attraction;
@@ -122,23 +124,14 @@ public class TourGuideServiceTest {
 
         System.out.println(generatedJson);
 
-        StringBuilder manualJson = new StringBuilder("{");
-        allUsersLastLocation.forEach((id, location) ->
-                manualJson.append("\"")
-                        .append(id)
-                        .append("\":")
-                        .append("{\"longitude\":").append(BigDecimal.valueOf(location.longitude).setScale(6, RoundingMode.HALF_UP).doubleValue())
-						.append(",")
-						.append("\"latitude\":").append(BigDecimal.valueOf(location.latitude).setScale(6, RoundingMode.HALF_UP).doubleValue())
-						.append("},")
-		);
-		manualJson.deleteCharAt(manualJson.length() - 1).append("}");
-
-		System.out.println(manualJson.toString());
-
-		assertThat(manualJson.toString())
-				.isEqualToIgnoringWhitespace(generatedJson);
-	}
+        allUsersLastLocation.forEach((id, location) -> {
+            Any userCoordinates = JsonIterator.deserialize(generatedJson).get(id);
+            assertThat(userCoordinates.toBigDecimal("latitude").setScale(6, RoundingMode.HALF_UP).doubleValue())
+                    .isEqualTo(BigDecimal.valueOf(location.latitude).setScale(6, RoundingMode.HALF_UP).doubleValue());
+            assertThat(userCoordinates.toBigDecimal("longitude").setScale(6, RoundingMode.HALF_UP).doubleValue())
+                    .isEqualTo(BigDecimal.valueOf(location.longitude).setScale(6, RoundingMode.HALF_UP).doubleValue());
+        });
+    }
 
 	@Test
 	public void getNearbyAttractions() {

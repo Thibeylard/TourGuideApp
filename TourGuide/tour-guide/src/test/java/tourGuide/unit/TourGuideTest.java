@@ -29,8 +29,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -65,7 +64,7 @@ public class TourGuideTest {
                 .usingRecursiveComparison()
                 .isEqualTo(previousLocation);
 
-        mockMvc.perform(get("/admin/action/startTracker"));
+        mockMvc.perform(post("/admin/action/startTracker"));
         assertThat(tourGuideService.tracker.isStopped())
                 .isFalse();
 
@@ -75,7 +74,7 @@ public class TourGuideTest {
                 .usingRecursiveComparison()
                 .isNotEqualTo(previousLocation);
 
-        mockMvc.perform(get("/admin/action/stopTracker"));
+        mockMvc.perform(post("/admin/action/stopTracker"));
 
         assertThat(tourGuideService.tracker.isStopped())
                 .isTrue();
