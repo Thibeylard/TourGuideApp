@@ -1,15 +1,10 @@
 package common.dtos;
 
-import com.jsoniter.annotation.JsonProperty;
 
 public class NearbyAttractionDTO {
-    @JsonProperty("latitude")
     double latitude;
-    @JsonProperty("longitude")
     double longitude;
-    @JsonProperty("distance")
     double distance;
-    @JsonProperty("rewardPoints")
     int rewardPoints;
 
     public NearbyAttractionDTO() {
