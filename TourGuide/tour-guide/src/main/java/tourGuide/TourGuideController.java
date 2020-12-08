@@ -66,12 +66,15 @@ public class TourGuideController {
         return JsonStream.serialize(providers);
     }
 
+    @GetMapping("/user/getPreferences")
+    public String getPreferences(@RequestParam String userName) {
+        return JsonStream.serialize(new UserPreferencesDTO(userName, getUser(userName).getUserPreferences()));
+    }
+
     @PutMapping("/user/updatePreferences")
     public String updatePreferences(@RequestBody UserPreferencesDTO preferencesUpdate) {
-        return JsonStream.serialize(
-                new UserPreferencesDTO(preferencesUpdate.getUsername(),
-                        tourGuideService.updateUserPreferences(preferencesUpdate))
-        );
+        tourGuideService.updateUserPreferences(preferencesUpdate);
+        return getPreferences(preferencesUpdate.getUsername());
     }
 
     private User getUser(String userName) {

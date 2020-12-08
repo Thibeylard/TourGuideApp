@@ -1,4 +1,4 @@
-package tourGuide;
+package tourGuide.config;
 
 import common.services.GpsUtilService;
 import common.services.RewardsService;
